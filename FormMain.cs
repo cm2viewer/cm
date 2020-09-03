@@ -269,7 +269,7 @@ namespace cm
             string notes = "";
             if (Helper.InputBox("Backup", "Enter Backup Notes", ref notes) != DialogResult.OK)
                 return;
-            string fileName = SaveGame.path + SaveGame.SelectedSaveGame + "S16." + SaveGame.ReadCurDate(SaveGame.SelectedSaveGame).ToString("yyMMdd") + notes + ".zip";
+            string fileName = SaveGame.BackupPath +SaveGame.SelectedSaveGame + "S16." + SaveGame.ReadCurDate(SaveGame.SelectedSaveGame).ToString("yyMMdd") + notes + ".zip";
 
             if (File.Exists(fileName)) File.Delete(fileName);
             using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Create))
@@ -310,16 +310,16 @@ namespace cm
             restoreToolStripMenuItem.DropDownItems.Clear();
             
             IOrderedEnumerable<string> list1 = from d in Directory.GetDirectories(SaveGame.path)
-                                                           select d.Split('\\').Last() into d
+                                               select d.Split('\\').Last() into d
                                                            where Regex.Match(d, "^[0-9]+").Success
                                                            orderby d descending
                                                            select d;
                                                            
-            IOrderedEnumerable<string> list2 = from d in Directory.GetFiles(SaveGame.path, SaveGame.SelectedSaveGame + "S16.*.zip")
+            IOrderedEnumerable<string> list2 = from d in Directory.GetFiles(SaveGame.BackupPath, SaveGame.SelectedSaveGame + "S16.*.zip")
                                                            select d.Split('\\').Last() into d
                                                            orderby d descending
                                                            select d;
-            foreach (string name in list1.Concat(list2))
+            foreach (string name in list2.Concat(list1))
             {
                 ToolStripItem toolStripItem = restoreToolStripMenuItem.DropDownItems.Add(name);
                 toolStripItem.Click += delegate
@@ -331,11 +331,10 @@ namespace cm
 
         private void restore(string name)
         {
-            String fileName = SaveGame.path + name;
 
             if (name.EndsWith(".zip"))
             {
-                using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                using (ZipArchive zip = ZipFile.OpenRead(SaveGame.BackupPath + name))
                 {
                     foreach (var file in zip.Entries)
                     {
@@ -345,6 +344,7 @@ namespace cm
             }
             else
             {
+                String fileName = SaveGame.path + name;
                 if (Directory.Exists(fileName))
                 {
                     foreach (string filename in Directory.GetFiles(fileName, "*" + SaveGame.SelectedSaveGame +  ".S16"))
@@ -354,7 +354,7 @@ namespace cm
                     }
                 }
             }
-            MessageBox.Show("done restore from " + fileName);
+            MessageBox.Show("done restore from " + name);
         }
 
         private void button10_Click(object sender, EventArgs e)

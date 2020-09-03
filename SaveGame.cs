@@ -13,6 +13,7 @@ namespace cm
     {
         public static int SelectedSaveGame;
         public static string path;
+        public static string BackupPath;
         public static string PlayerFileName;
         public static string TeamFileName;
         public static string ManagerFileName;
@@ -26,6 +27,9 @@ namespace cm
         public static void SelectSaveGame(int i)
         {
             SaveGame.SelectedSaveGame = i;
+            SaveGame.BackupPath = SaveGame.path + "Backup\\";
+            if (!Directory.Exists(BackupPath))
+                Directory.CreateDirectory(BackupPath);
             SaveGame.GeneralFileName = SaveGame.path + "GNDATA" + SaveGame.SelectedSaveGame + ".S16";
             SaveGame.PlayerFileName = SaveGame.path + "PLDATA" + SaveGame.SelectedSaveGame + ".S16";
             SaveGame.TeamFileName = SaveGame.path + "TMDATA" + SaveGame.SelectedSaveGame + ".S16";

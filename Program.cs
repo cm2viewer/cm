@@ -20,19 +20,26 @@ namespace cm
             if (System.Diagnostics.Debugger.IsAttached)
                 SaveGame.path = "D:\\Download\\cm9798\\";
 
-            var list = SaveGame.ReadSaveGameList();
-            int numAvailable = list.Count(s => s.Available.Equals(true));
-            if (numAvailable == 1)
+            if (!System.IO.File.Exists(SaveGame.path + "GAMESS16.IDX"))
             {
-                int index = list.First(s => s.Available == true).index;
-                SaveGame.SelectSaveGame(index);
-                Application.Run(new FormMain());
+                MessageBox.Show(SaveGame.path + "GAMESS16.IDX not found");
             }
             else
             {
-                Application.Run(new FormSelect());
-                if (SaveGame.SelectedSaveGame > 0)
+                var list = SaveGame.ReadSaveGameList();
+                int numAvailable = list.Count(s => s.Available.Equals(true));
+                if (numAvailable == 1)
+                {
+                    int index = list.First(s => s.Available == true).index;
+                    SaveGame.SelectSaveGame(index);
                     Application.Run(new FormMain());
+                }
+                else
+                {
+                    Application.Run(new FormSelect());
+                    if (SaveGame.SelectedSaveGame > 0)
+                        Application.Run(new FormMain());
+                }
             }
         }
     }
