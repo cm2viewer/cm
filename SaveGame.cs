@@ -159,37 +159,39 @@ namespace cm
                         for (int i = 0; i < 5; i++)
                             reader.ReadName(false);
                         team.stadium = reader.ReadName(false);
-                        TeamData teamData = reader.ReadStruct<TeamData>(1466);
+                        TeamData t = reader.ReadStruct<TeamData>(1466);
                         if (!ReadTeamNameOnly)
                         {
-                            if (teamData.cn < teamNameList.Count)
-                                team.cn = teamNameList[teamData.cn].name;
-                            team.pop = teamData.pop;
-                            team.flex = teamData.flex;
-                            team.supp = teamData.supp;
-                            team.cap = teamData.cap;
-                            team.seat = teamData.seat;
-                            team.shortlist = teamData.shortlist;
-                            //team.val = (int)teamData.val;
-                            team.player_sales = (int)teamData.player_sales;
-                            if (teamData.division < competitionList.Count && teamData.division >1)
-                                team.division = competitionList[teamData.division].name2;
-                            team.EEC = teamData.EEC;
+                            if (t.cn < teamNameList.Count)
+                                team.cn = teamNameList[t.cn].name;
+                            team.pop = t.pop;
+                            team.flex = t.flex;
+                            team.supp = t.supp;
+                            team.cap = t.cap;
+                            team.seat = t.seat;
+                            team.shortlist = t.shortlist;
+                            //team.val = (int)t.val;
+                            team.player_sales = (int)t.player_sales;
+                            team.balance = (int)(t.start_balance + t.season_ticket + t.gate_receipt + t.tv_prize + t.player_sales + t.other_income);
+                            team.balance -= (int)(t.player_wages + t.player_bonus + t.player_purchase + t.other_cost);
+                            if (t.division < competitionList.Count && t.division >1)
+                                team.division = competitionList[t.division].name2;
+                            team.EEC = t.EEC;
                         }
                         if (ReadPlayerName)
                         { 
                             for (int j = 0; j < 32; j++)
                             {
-                                if (teamData.p1[j] < playerNameList.Count && teamData.p1[j] > 1)
+                                if (t.p1[j] < playerNameList.Count && t.p1[j] > 1)
                                 {
-                                    team.p1 = team.p1 + "," + playerNameList[teamData.p1[j]].Name;
+                                    team.p1 = team.p1 + "," + playerNameList[t.p1[j]].Name;
                                 }
                             }
                             for (int k = 0; k < 22; k++)
                             {
-                                if (teamData.p2[k] < playerNameList.Count && teamData.p2[k] > 1)
+                                if (t.p2[k] < playerNameList.Count && t.p2[k] > 1)
                                 {
-                                    team.p2 = team.p2 + "," + playerNameList[teamData.p2[k]].Name;
+                                    team.p2 = team.p2 + "," + playerNameList[t.p2[k]].Name;
                                 }
                             }
                         }
@@ -258,28 +260,28 @@ namespace cm
 
                            
                             player.alt = "";
-                            if ((player.GK & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "GK";
-                            if ((player.SW & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "SW";
-                            if ((player.D & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "D";
-                            if ((player.DM & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "DM";
-                            if ((player.M & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "M";
-                            if ((player.AM & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "AM";
-                            if ((player.S & 0x01) == 0x01) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "S";
-                            if ((player.R & 0x01) == 0x01) player.alt += "R";
-                            if ((player.L & 0x01) == 0x01) player.alt += "L";
-                            if ((player.C & 0x01) == 0x01) player.alt += "C";
+                            if (player.GK == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "GK";
+                            if (player.SW == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "SW";
+                            if (player.D == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "D";
+                            if (player.DM == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "DM";
+                            if (player.M == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "M";
+                            if (player.AM == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "AM";
+                            if (player.S == 1) player.alt += (string.IsNullOrEmpty(player.alt) ? "" : "/") + "S";
+                            if (player.R == 1) player.alt += "R";
+                            if (player.L == 1) player.alt += "L";
+                            if (player.C == 1) player.alt += "C";
 
                             player.pos = "";
-                            if ((player.GK & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "GK";
-                            if ((player.SW & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "SW";
-                            if ((player.D & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "D";
-                            if ((player.DM & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "DM";
-                            if ((player.M & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "M";
-                            if ((player.AM & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "AM1";
-                            if ((player.S & 0x02) == 0x02) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "S";
-                            if ((player.R & 0x02) == 0x02) player.pos += "R";
-                            if ((player.L & 0x02) == 0x02) player.pos += "L";
-                            if ((player.C & 0x02) == 0x02) player.pos += "C";
+                            if (player.GK == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "GK";
+                            if (player.SW == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "SW";
+                            if (player.D == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "D";
+                            if (player.DM == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "DM";
+                            if (player.M == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "M";
+                            if (player.AM == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "AM1";
+                            if (player.S == 2) player.pos += (string.IsNullOrEmpty(player.pos) ? "" : "/") + "S";
+                            if (player.R == 2) player.pos += "R";
+                            if (player.L == 2) player.pos += "L";
+                            if (player.C == 2) player.pos += "C";
 
                             //DM1/M/AM1 -> DM/AM
                             //DM1/M/AM1/S -> DM/M/FC

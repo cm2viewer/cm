@@ -120,81 +120,19 @@ namespace cm
         public int apps { get; set; }    
         public int goal { get; set; }
         public int asst { get; set; }
-        public int GK { get; set; }
-        public int SW { get; set; }
-        public int D { get; set; }
-        public int DM { get; set; }
-        public int M { get; set; }
-        public int AM { get; set; }
-        public int S { get; set; }
-        public int L { get; set; }
-        public int C { get; set; }
-        public int R { get; set; }
+        public byte GK { get; set; }
+        public byte SW { get; set; }
+        public byte D { get; set; }
+        public byte DM { get; set; }
+        public byte M { get; set; }
+        public byte AM { get; set; }
+        public byte S { get; set; }
+        public byte L { get; set; }
+        public byte C { get; set; }
+        public byte R { get; set; }
 
         public int teamval { get; set; }
         public string sell { get; set; }
     }
    
-    public class Playerxx
-    {
-        public string Name;
-        public int age;
-
-        public string pos;
-        public string alt;
-        public ushort abi;
-        public ushort pot;
-        public int DDM_pot;
-        public int FC_pot;
-        public ushort rep;
-        public ushort tal;
-        public byte Abil;
-        public byte Big;
-        public byte Chr;
-        public byte Con;
-        public string TRF;
-        public int teamval;
-        public string sell;
-        public int price;
-        public int wage;
-        public double rate;
-        public string cn;
-        public string club;
-        public byte caps;
-        public byte Adap;
-        public byte Agg;
-        public byte Cre;
-        public byte Det;
-        public byte Dir;
-        public byte Dri;
-        public byte Fla;
-        public byte Hea;
-        public byte Inf;
-        public byte Inj;
-        public byte Off;
-        public byte Pac;
-        public byte Pas;
-        public byte Posi;
-        public byte Set;
-        public byte Sho;
-        public byte Sta;
-        public byte Str;
-        public byte Tac;
-        public byte Tec;
-        public int apps;
-        public int goal;
-        public int asst;
-        
-        public byte GK;
-        public byte SW;
-        public byte D;
-        public byte DM;
-        public byte M;
-        public byte AM;
-        public byte S;
-        public byte L;
-        public byte C;
-        public byte R;
-    }
-
 }
