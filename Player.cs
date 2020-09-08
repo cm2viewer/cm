@@ -78,19 +78,21 @@ namespace cm
         public string alt { get; set; }
         public ushort abi { get; set; }
         public ushort pot { get; set; }
+        public int skill { get; set; }
+        public double avg { get; set; }
+        public byte Big { get; set; }
+        public byte Con { get; set; }
+        public byte Agg { get; set; }
         public int DDM_pot { get; set; }
         public int FC_pot { get; set; }
         public ushort rep { get; set; }
         public ushort tal { get; set; }
-        public byte Big { get; set; }
         public byte Chr { get; set; }
         public byte Mor { get; set; }
-        public byte Con { get; set; }
-        public byte Agg { get; set; }
         public string TRF { get; set; }
         public int price { get; set; }
-        public int wage { get; set; }
         public double rating { get; set; }
+        public int wage { get; set; }
         public string club { get; set; }
         public string club_cn { get; set; }
         public string division { get; set; }

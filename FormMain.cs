@@ -37,6 +37,9 @@ namespace cm
             button7.Enabled = (dt.TableName == "Player");
             button8.Enabled = (dt.TableName == "Player");
             button9.Enabled = (dt.TableName == "Player");
+            button15.Enabled = (dt.TableName == "Player");
+            button14.Enabled = (dt.TableName == "Player");
+            button13.Enabled = (dt.TableName == "Player");
         }
 
         public void Bind<T>(List<T> list)
@@ -163,6 +166,25 @@ namespace cm
             filter();
         }
 
+        private void button15_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>70";
+            filter();
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>50";
+            filter();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            List<Manager> list = SaveGame.ReadManagerData();
+            textBox1.Text = "Club='" + list[list.Count - 1].club + "' AND (CRE+PAS+SET)>40";
+            dv.RowFilter = textBox1.Text;
+
+        }
         private void button2_Click(object sender, EventArgs e)
         {
             textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=15 AND SHO>=15 AND HEA>=10 AND STA>=10";
@@ -171,13 +193,13 @@ namespace cm
 
         private void button4_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=12 AND SHO>=12 AND HEA>=5 AND STA>=10";
+            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=10 AND OFF>=12 AND SHO>=12 AND HEA>=5 AND STA>=10";
             filter();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(AM=2 OR S=2) AND DET>=5 AND OFF>=10 AND SHO>=10 AND HEA>=5 AND STA>=8";
+            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=5 AND OFF>=10 AND SHO>=10 AND HEA>=5 AND STA>=8";
             filter();
         }
 
@@ -390,6 +412,5 @@ namespace cm
             
         }
 
-       
     }
 }

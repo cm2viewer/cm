@@ -306,7 +306,7 @@ namespace cm
                                 player.rating = Math.Round((double)(data.domrate + data.eurate) / (double)(data.domapps + data.euapps),2);
                             }
                             player.cn = teamList[data.cn].name;
-                            player.fgn = (teamList[data.cn].EEC == 0 ? "1" : "");
+                            player.fgn = (teamList[data.cn].EEC == 0 ? "yes" : "no");
                             player.club = teamList[data.club].name;
                             player.club_cn = teamList[data.club].cn;
                             player.division = teamList[data.club].division;
@@ -372,6 +372,14 @@ namespace cm
                             player.Str = array2[21];
                             player.Tac = array2[22];
                             player.Tec = array2[23];
+                            //sum all skill
+                            player.skill = array2.Sum(x => x);
+                            //big and con worth 2x value, subtract morale and character
+                            player.skill += (player.Big + player.Con - player.Mor - player.Chr);
+                            //fix injury prones and dirtiness 1-good 20-bad
+                            player.skill += (20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir);                            
+                            player.avg = player.skill/24;
+                            
                             player.DDM_pot = (player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
                             player.FC_pot = (player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
                         }

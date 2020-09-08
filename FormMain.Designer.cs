@@ -43,6 +43,9 @@ namespace cm
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button14 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
             this.btnMyCountry = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -84,7 +87,7 @@ namespace cm
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(97, 27);
+            this.button4.Location = new System.Drawing.Point(178, 27);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 5;
@@ -104,7 +107,7 @@ namespace cm
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(838, 53);
+            this.button3.Location = new System.Drawing.Point(919, 53);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(47, 21);
             this.button3.TabIndex = 3;
@@ -114,7 +117,7 @@ namespace cm
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(250, 3);
+            this.textBox1.Location = new System.Drawing.Point(331, 3);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(635, 47);
@@ -122,7 +125,7 @@ namespace cm
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(97, 3);
+            this.button2.Location = new System.Drawing.Point(178, 3);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 1;
@@ -150,6 +153,9 @@ namespace cm
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.button13);
+            this.splitContainer2.Panel1.Controls.Add(this.button14);
+            this.splitContainer2.Panel1.Controls.Add(this.button15);
             this.splitContainer2.Panel1.Controls.Add(this.btnMyCountry);
             this.splitContainer2.Panel1.Controls.Add(this.button10);
             this.splitContainer2.Panel1.Controls.Add(this.label5);
@@ -180,13 +186,43 @@ namespace cm
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.sqlDatagridview1);
-            this.splitContainer2.Size = new System.Drawing.Size(894, 426);
+            this.splitContainer2.Size = new System.Drawing.Size(1035, 426);
             this.splitContainer2.SplitterDistance = 74;
             this.splitContainer2.TabIndex = 4;
             // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(97, 51);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(75, 23);
+            this.button13.TabIndex = 32;
+            this.button13.Text = "FK/Corner";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(97, 27);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(75, 23);
+            this.button14.TabIndex = 31;
+            this.button14.Text = "MF GOOD";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(97, 3);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(75, 23);
+            this.button15.TabIndex = 30;
+            this.button15.Text = "MF BEST";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
             // btnMyCountry
             // 
-            this.btnMyCountry.Location = new System.Drawing.Point(714, 53);
+            this.btnMyCountry.Location = new System.Drawing.Point(795, 53);
             this.btnMyCountry.Name = "btnMyCountry";
             this.btnMyCountry.Size = new System.Drawing.Size(69, 21);
             this.btnMyCountry.TabIndex = 29;
@@ -196,7 +232,7 @@ namespace cm
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(789, 53);
+            this.button10.Location = new System.Drawing.Point(870, 53);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(43, 21);
             this.button10.TabIndex = 28;
@@ -207,7 +243,7 @@ namespace cm
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(368, 56);
+            this.label5.Location = new System.Drawing.Point(449, 56);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(27, 13);
             this.label5.TabIndex = 27;
@@ -215,7 +251,7 @@ namespace cm
             // 
             // tbRep
             // 
-            this.tbRep.Location = new System.Drawing.Point(396, 54);
+            this.tbRep.Location = new System.Drawing.Point(477, 54);
             this.tbRep.Name = "tbRep";
             this.tbRep.Size = new System.Drawing.Size(26, 20);
             this.tbRep.TabIndex = 26;
@@ -223,7 +259,7 @@ namespace cm
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(425, 56);
+            this.label6.Location = new System.Drawing.Point(506, 56);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(22, 13);
             this.label6.TabIndex = 25;
@@ -231,28 +267,28 @@ namespace cm
             // 
             // tbTalent
             // 
-            this.tbTalent.Location = new System.Drawing.Point(451, 54);
+            this.tbTalent.Location = new System.Drawing.Point(532, 54);
             this.tbTalent.Name = "tbTalent";
             this.tbTalent.Size = new System.Drawing.Size(26, 20);
             this.tbTalent.TabIndex = 24;
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(178, 51);
+            this.button9.Location = new System.Drawing.Point(259, 51);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(66, 23);
             this.button9.TabIndex = 23;
-            this.button9.Text = "GK FREE";
+            this.button9.Text = "GK FAIR";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(97, 51);
+            this.button8.Location = new System.Drawing.Point(178, 51);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(75, 23);
             this.button8.TabIndex = 22;
-            this.button8.Text = "FC FREE";
+            this.button8.Text = "FC FAIR";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
@@ -262,14 +298,14 @@ namespace cm
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(88, 23);
             this.button7.TabIndex = 21;
-            this.button7.Text = "D/DM FREE";
+            this.button7.Text = "D/DM FAIR";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(247, 56);
+            this.label4.Location = new System.Drawing.Point(328, 56);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 13);
             this.label4.TabIndex = 20;
@@ -277,7 +313,7 @@ namespace cm
             // 
             // tbAbility
             // 
-            this.tbAbility.Location = new System.Drawing.Point(284, 54);
+            this.tbAbility.Location = new System.Drawing.Point(365, 54);
             this.tbAbility.Name = "tbAbility";
             this.tbAbility.Size = new System.Drawing.Size(26, 20);
             this.tbAbility.TabIndex = 19;
@@ -285,7 +321,7 @@ namespace cm
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(558, 56);
+            this.label3.Location = new System.Drawing.Point(639, 56);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 18;
@@ -294,7 +330,7 @@ namespace cm
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(315, 56);
+            this.label2.Location = new System.Drawing.Point(396, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(23, 13);
             this.label2.TabIndex = 17;
@@ -302,7 +338,7 @@ namespace cm
             // 
             // tbPotential
             // 
-            this.tbPotential.Location = new System.Drawing.Point(339, 54);
+            this.tbPotential.Location = new System.Drawing.Point(420, 54);
             this.tbPotential.Name = "tbPotential";
             this.tbPotential.Size = new System.Drawing.Size(26, 20);
             this.tbPotential.TabIndex = 16;
@@ -320,14 +356,14 @@ namespace cm
             "N/A",
             "<>N/A",
             "CHEAP"});
-            this.cbStatus.Location = new System.Drawing.Point(600, 53);
+            this.cbStatus.Location = new System.Drawing.Point(681, 53);
             this.cbStatus.Name = "cbStatus";
             this.cbStatus.Size = new System.Drawing.Size(49, 21);
             this.cbStatus.TabIndex = 15;
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(178, 27);
+            this.button12.Location = new System.Drawing.Point(259, 27);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(66, 23);
             this.button12.TabIndex = 14;
@@ -337,7 +373,7 @@ namespace cm
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(178, 3);
+            this.button11.Location = new System.Drawing.Point(259, 3);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(66, 23);
             this.button11.TabIndex = 13;
@@ -348,7 +384,7 @@ namespace cm
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(481, 56);
+            this.label1.Location = new System.Drawing.Point(562, 56);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(26, 13);
             this.label1.TabIndex = 10;
@@ -356,14 +392,14 @@ namespace cm
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(509, 54);
+            this.textBox2.Location = new System.Drawing.Point(590, 54);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(35, 20);
             this.textBox2.TabIndex = 9;
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(655, 53);
+            this.button6.Location = new System.Drawing.Point(736, 53);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(53, 21);
             this.button6.TabIndex = 6;
@@ -412,7 +448,7 @@ namespace cm
             this.sqlDatagridview1.RowTemplate.Height = 16;
             this.sqlDatagridview1.RowTemplate.ReadOnly = true;
             this.sqlDatagridview1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.sqlDatagridview1.Size = new System.Drawing.Size(894, 348);
+            this.sqlDatagridview1.Size = new System.Drawing.Size(1035, 348);
             this.sqlDatagridview1.TabIndex = 0;
             this.sqlDatagridview1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.sqlDatagridview1_CellContentDoubleClick);
             this.sqlDatagridview1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sqlDatagridview1_CellContentClick);
@@ -437,7 +473,7 @@ namespace cm
             this.restoreToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(894, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1035, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -495,13 +531,12 @@ namespace cm
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
             this.restoreToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.restoreToolStripMenuItem.Text = "Restore";
-            
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(894, 450);
+            this.ClientSize = new System.Drawing.Size(1035, 450);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -603,5 +638,8 @@ namespace cm
         private Button button10;
         private Button btnMyCountry;
         private ToolStripMenuItem competitionDBToolStripMenuItem;
+        private Button button13;
+        private Button button14;
+        private Button button15;
     }
 }
