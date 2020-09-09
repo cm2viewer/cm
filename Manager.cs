@@ -50,6 +50,7 @@ namespace cm
             get;
             set;
         }
+        public int clubID { get; set; }
 
         public byte rep
         {

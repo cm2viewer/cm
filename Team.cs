@@ -83,6 +83,7 @@ namespace cm
         public int id { get; set; }
         public string name { get; set; }
         public string cn { get; set; }
+        public string loc { get; set; }
         public byte EEC { get; set; }
         public string division { get; set; }
         public string stadium { get; set; }

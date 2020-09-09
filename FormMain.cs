@@ -24,6 +24,25 @@ namespace cm
             this.Text += " - " + SaveGame.ReadSaveGameList().First(s => s.index == SaveGame.SelectedSaveGame).SaveName;
             Bind(SaveGame.ReadPlayersData(ReadNameOnly: false));
             PopulateRestore(); 
+            for (int i=0;i<Player.skillName.Length;i++)
+            {
+                Label lbl = new Label() {
+                    Text = Player.skillLongName[i],
+                    Top = 10 + ((i % 4) * 20),
+                    Left = 10 + ((int)(i / 4) * 120),
+                    Size = new Size(50, 15)
+                };
+                NumericUpDown nud = new NumericUpDown() {
+                    Name = Player.skillName[i],
+                    Top = 10 + ((i % 4) * 20),
+                    Left = 70 + ((int)(i / 4) * 120),
+                    Size = new Size(40, 15),
+                    Maximum = 20,
+                    TextAlign = HorizontalAlignment.Center
+                };
+                splitContainer1.Panel2.Controls.Add(lbl);
+                splitContainer1.Panel2.Controls.Add(nud);
+            }
         }
 
         public void SetButtons()
@@ -52,6 +71,7 @@ namespace cm
             sqlDatagridview1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             SetButtons();
         }
+       
 
         public static DataTable BuildDataTable<T>(IList<T> lst)
         {
@@ -86,11 +106,37 @@ namespace cm
         {
             if (dt.TableName == "Player")
             {
+                if (!textBox1.Text.Trim().Equals(""))
+                    textBox1.Text = " AND " + textBox1.Text;
+                for (int i=0;i<Player.skillName.Length;i++)
+                {
+                    textBox1.Text = Regex.Replace(textBox1.Text, 
+                        " AND " + Player.skillName[i] + ">=([0-9]+)", "");
+                }
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND ABI>=([0-9]+)", "");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND POT>=([0-9]+)", "");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND REP<=([0-9]+)", "");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND TAL<=([0-9]+)", "");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND AGE<=([0-9]+)", "");
+                for (int i = 0; i < Player.skillName.Length; i++)
+                {
+                    foreach (Control c in splitContainer1.Panel2.Controls)
+                    {
+                        if (c is NumericUpDown)
+                        {
+                            NumericUpDown nud = (NumericUpDown)c;
+                            if (nud.Value > 0)
+                            {
+                                textBox1.Text = Regex.Replace(textBox1.Text, " AND " + nud.Name.ToUpper() + "([<>])=([0-9]+)", "");
+                                String s = textBox1.Text;
+                                if (nud.Name.Equals("Dir") || nud.Name.Equals("Inj"))
+                                    textBox1.Text = s + " AND " + nud.Name.ToUpper() + "<=" + nud.Value;
+                                else
+                                    textBox1.Text = s + " AND " + nud.Name.ToUpper() + ">=" + nud.Value;
+                            }
+                        }
+                    }                   
+                }
                 if (tbAbility.Text != "")
                 {
                     TextBox textBox = textBox1;
@@ -134,6 +180,7 @@ namespace cm
                         textBox6.Text = textBox6.Text + " AND TRF='" + cbStatus.SelectedItem.ToString() + "'";
                     }
                 }
+
             }
             textBox1.Text = Regex.Replace(textBox1.Text, "^ AND ", "");
             try
@@ -388,6 +435,13 @@ namespace cm
             tbRep.Text = "";
             cbStatus.SelectedIndex = 0;
             textBox2.Text = "";
+            foreach (Control c in splitContainer1.Panel2.Controls)
+            {
+                if (c is NumericUpDown)
+                {
+                    ((NumericUpDown)c).Value = 0;
+                }
+            }
             filter();
         }
 
@@ -412,5 +466,12 @@ namespace cm
             
         }
 
+        private void btnMyDivision_Click(object sender, EventArgs e)
+        {
+            List<Manager> list = SaveGame.ReadManagerData();
+            List<Team> teamList = SaveGame.ReadTeamData(false,false);
+            textBox1.Text = "Division='" + teamList[list[list.Count - 1].clubID].division + "'";
+            dv.RowFilter = textBox1.Text;
+        }
     }
 }

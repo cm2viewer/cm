@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 namespace cm
 { 
-    [StructLayout(LayoutKind.Explicit)]
-    internal struct Data
+    [StructLayout(LayoutKind.Explicit,Size = 360)]
+    public unsafe struct Data
     {
         [FieldOffset(8)]
         public ushort cn;
@@ -46,11 +46,11 @@ namespace cm
         [FieldOffset(138)]
         public byte status;
         [FieldOffset(234)]
-        public long skill1;
-        [FieldOffset(242)]
-        public long skill2;
-        [FieldOffset(250)]
-        public long skill3;
+        public fixed byte skill[24];
+        //[FieldOffset(242)]
+        //public long skill2;
+        //[FieldOffset(250)]
+        //public long skill3;
         [FieldOffset(267)]
         public byte domapps;
         [FieldOffset(268)]
@@ -71,6 +71,15 @@ namespace cm
 
     public class Player
     {
+        public static string[] skillName = 
+            {"Agg","Big","Chr","Mor","Con","Cre","Det","Dir","Dri","Fla","Hea","Inf","Inj","Adap",
+            "Off","Pac","Pas","Posi","Set","Sho","Sta","Str","Tac","Tec" };
+        public static string[] skillLongName =
+            {"Aggression","Big Oscassion","Character","Morale","Consistency",
+            "Creativity","Determination","Dirtyness","Dribbling","Flair","Heading",
+            "Influence","Injury Prone","Adaptibility",
+            "Off the ball","Pace","Passing","Positioning","Set Pieces","Shooting",
+            "Stamina","Strength","Tackling","Technique" };
         public string Name { get; set; }
         public int age { get; set; }
         public string cn { get; set; }
@@ -78,6 +87,7 @@ namespace cm
         public string alt { get; set; }
         public ushort abi { get; set; }
         public ushort pot { get; set; }
+        //public byte[] playerskill { get; set; }
         public int skill { get; set; }
         public double avg { get; set; }
         public byte Big { get; set; }

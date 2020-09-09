@@ -7,8 +7,29 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
+
 public static class Helper
 {
+    [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
+    private static unsafe extern void CopyMemory(void* dest, void* src, int count);
+
+    public static T ReadStruct2<T>(this BinaryReader reader, int numbytes) where T : struct
+    {
+        int size = numbytes;// Marshal.SizeOf(typeof(T));
+        byte[] array = new byte[size];
+        reader.Read(array, 0, array.Length);
+
+        IntPtr ptr = Marshal.AllocHGlobal(size);
+
+        Marshal.Copy(array, 0, ptr, size);
+
+        var str = (T)Marshal.PtrToStructure(ptr, typeof(T));
+        Marshal.FreeHGlobal(ptr);
+
+        return str;
+    }
+
+    //GCHandle.Alloc will fail if the struct has non-blittable data, e.g. an array
     public static T ReadStruct<T>(this BinaryReader reader, int numbytes) where T : struct
     {
         byte[] array = new byte[numbytes];

@@ -81,6 +81,7 @@ namespace cm
                         }
                         if (mData.club < teamNameList.Count)
                         {
+                            manager.clubID = mData.club;
                             manager.club = teamNameList[mData.club].name;
                         }
                         manager.rep = mData.rep;
@@ -164,6 +165,7 @@ namespace cm
                         {
                             if (t.cn < teamNameList.Count)
                                 team.cn = teamNameList[t.cn].name;
+                            team.loc = t.x + "," + t.y;
                             team.pop = t.pop;
                             team.flex = t.flex;
                             team.supp = t.supp;
@@ -226,7 +228,7 @@ namespace cm
         
 
 
-        public static List<Player> ReadPlayersData(bool ReadNameOnly)
+        public unsafe static List<Player> ReadPlayersData(bool ReadNameOnly) 
         {
             List<Team> teamList = ReadTeamData(false,false);
             DateTime curDate = ReadCurDate(SelectedSaveGame);
@@ -344,11 +346,16 @@ namespace cm
                                     player.TRF = "ERR";
                                     break;
                             }
+                            /*
                             byte[] array2 = BitConverter.GetBytes(data.skill1).
                                 Concat(BitConverter.GetBytes(data.skill2)).
                                 Concat(BitConverter.GetBytes(data.skill3))
                                 .ToArray();
-                            player.Adap = array2[13];
+                                */
+                            byte* array2 = data.skill;
+                            //player.playerskill = new byte[24];
+                            //System.Runtime.InteropServices.Marshal.Copy((IntPtr)data.skill,player.playerskill,0,24);
+                            
                             player.Agg = array2[0];
                             player.Big = array2[1];     //big
                             player.Chr = array2[2];     //character
@@ -362,6 +369,7 @@ namespace cm
                             player.Hea = array2[10];
                             player.Inf = array2[11];
                             player.Inj = array2[12];
+                            player.Adap = array2[13];
                             player.Off = array2[14];
                             player.Pac = array2[15];
                             player.Pas = array2[16];
@@ -373,19 +381,20 @@ namespace cm
                             player.Tac = array2[22];
                             player.Tec = array2[23];
                             //sum all skill
-                            player.skill = array2.Sum(x => x);
+                            //player.skill = array2.Sum(x => x);
+                            for (int x = 0; x < 24; x++)
+                                player.skill += data.skill[x];
                             //big and con worth 2x value, subtract morale and character
                             player.skill += (player.Big + player.Con - player.Mor - player.Chr);
                             //fix injury prones and dirtiness 1-good 20-bad
                             player.skill += (20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir);                            
-                            player.avg = player.skill/24;
+                            player.avg = (double)player.skill/24;
                             
                             player.DDM_pot = (player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
                             player.FC_pot = (player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
                         }
                         playerList.Add(player);
                     }
-                    
                 }
             }
             return playerList;
