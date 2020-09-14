@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO.Compression;    //require .NET 4.5
+using System.Net;
 
 namespace cm
 {
@@ -39,10 +40,20 @@ namespace cm
                     Size = new Size(40, 15),
                     Maximum = 20,
                     TextAlign = HorizontalAlignment.Center
+                    
                 };
+                nud.ValueChanged += (s, ex) => filter();
                 splitContainer1.Panel2.Controls.Add(lbl);
                 splitContainer1.Panel2.Controls.Add(nud);
             }
+            tbAbility.TextChanged += (s, ex) => filter();
+            tbPotential.TextChanged += (s, ex) => filter();
+            tbRep.TextChanged += (s, ex) => filter();
+            tbTalent.TextChanged += (s, ex) => filter();
+            tbAge.TextChanged += (s, ex) => filter();
+            cbStatus.TextChanged += (s, ex) => filter();
+            cbForeign.TextChanged += (s, ex) => filter();
+            Rating.ValueChanged += (s, ex) => filter();
         }
 
         public void SetButtons()
@@ -59,6 +70,7 @@ namespace cm
             button15.Enabled = (dt.TableName == "Player");
             button14.Enabled = (dt.TableName == "Player");
             button13.Enabled = (dt.TableName == "Player");
+            button16.Enabled = (dt.TableName == "Player");
         }
 
         public void Bind<T>(List<T> list)
@@ -108,45 +120,38 @@ namespace cm
             {
                 if (!textBox1.Text.Trim().Equals(""))
                     textBox1.Text = " AND " + textBox1.Text;
-                for (int i=0;i<Player.skillName.Length;i++)
-                {
-                    textBox1.Text = Regex.Replace(textBox1.Text, 
-                        " AND " + Player.skillName[i] + ">=([0-9]+)", "");
-                }
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND ABI>=([0-9]+)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND POT>=([0-9]+)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND REP<=([0-9]+)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND TAL<=([0-9]+)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND AGE<=([0-9]+)", "");
                 for (int i = 0; i < Player.skillName.Length; i++)
                 {
-                    foreach (Control c in splitContainer1.Panel2.Controls)
+                    textBox1.Text = Regex.Replace(textBox1.Text,
+                        " AND " + Player.skillName[i] + ">=([0-9]+)", "");
+                }
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND ABI>=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND POT>=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND REP<=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND TAL<=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND AGE<=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND FGN='(.*)'", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND Rating>=(.*)", "");
+                foreach (Control c in splitContainer1.Panel2.Controls)
+                {
+                    if (c is NumericUpDown)
                     {
-                        if (c is NumericUpDown)
+                        NumericUpDown nud = (NumericUpDown)c;
+                        if (nud.Value > 0)
                         {
-                            NumericUpDown nud = (NumericUpDown)c;
-                            if (nud.Value > 0)
-                            {
-                                textBox1.Text = Regex.Replace(textBox1.Text, " AND " + nud.Name.ToUpper() + "([<>])=([0-9]+)", "");
-                                String s = textBox1.Text;
-                                if (nud.Name.Equals("Dir") || nud.Name.Equals("Inj"))
-                                    textBox1.Text = s + " AND " + nud.Name.ToUpper() + "<=" + nud.Value;
-                                else
-                                    textBox1.Text = s + " AND " + nud.Name.ToUpper() + ">=" + nud.Value;
-                            }
+                            textBox1.Text = Regex.Replace(textBox1.Text, " AND " + nud.Name.ToUpper() + "([<>])=([0-9,.]+)", "");
+                            String s = textBox1.Text;
+                            if (nud.Name.Equals("Dir") || nud.Name.Equals("Inj"))
+                                textBox1.Text = s + " AND " + nud.Name.ToUpper() + "<=" + nud.Value.ToString().Replace(',','.');
+                            else
+                                textBox1.Text = s + " AND " + nud.Name.ToUpper() + ">=" + nud.Value.ToString().Replace(',', '.');
                         }
-                    }                   
+                    }
                 }
-                if (tbAbility.Text != "")
-                {
-                    TextBox textBox = textBox1;
-                    textBox.Text = textBox.Text + " AND ABI>=" + tbAbility.Text;
-                }
-                if (tbPotential.Text != "")
-                {
-                    TextBox textBox2 = textBox1;
-                    textBox2.Text = textBox2.Text + " AND POT>=" + tbPotential.Text;
-                }
+                
+               
+                if (tbAbility.Text != "") textBox1.Text += " AND ABI>=" + tbAbility.Text;
+                if (tbPotential.Text != "") textBox1.Text += " AND POT>=" + tbPotential.Text;
                 if (tbRep.Text != "")
                 {
                     TextBox textBox3 = textBox1;
@@ -157,10 +162,10 @@ namespace cm
                     TextBox textBox4 = textBox1;
                     textBox4.Text = textBox4.Text + " AND TAL<=" + tbTalent.Text;
                 }
-                if (this.textBox2.Text != "")
+                if (this.tbAge.Text != "")
                 {
                     TextBox textBox5 = textBox1;
-                    textBox5.Text = textBox5.Text + " AND AGE<=" + this.textBox2.Text;
+                    textBox5.Text = textBox5.Text + " AND AGE<=" + this.tbAge.Text;
                 }
                 if (cbStatus.SelectedItem != null)
                 {
@@ -180,14 +185,20 @@ namespace cm
                         textBox6.Text = textBox6.Text + " AND TRF='" + cbStatus.SelectedItem.ToString() + "'";
                     }
                 }
-
+                if (cbForeign.SelectedItem != null && !cbForeign.SelectedItem.Equals(""))
+                    textBox1.Text += " AND FGN='" + cbForeign.SelectedItem + "'";
             }
-            textBox1.Text = Regex.Replace(textBox1.Text, "^ AND ", "");
+
+            textBox1.Text = Regex.Replace(textBox1.Text, "^ AND ", "",RegexOptions.IgnoreCase);
             try
             {
-                dv.RowFilter = textBox1.Text;
+                dv.RowFilter = textBox1.Text + (textBox1.Text.Equals("")?"": " OR Name = 'Average'") ;
                 //if (dt.TableName == "Player")
                 //   dv.Sort = "POT DESC";
+                string lastRecordName = dv.Table.Rows[0]["Name"].ToString();
+                if (lastRecordName.Equals("Average")) dv.Table.Rows[0].Delete();
+
+
             }
             catch (Exception ex)
             {
@@ -221,6 +232,11 @@ namespace cm
 
         private void button14_Click(object sender, EventArgs e)
         {
+            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>60";
+            filter();
+        }
+        private void button16_Click(object sender, EventArgs e)
+        {
             textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>50";
             filter();
         }
@@ -228,10 +244,11 @@ namespace cm
         private void button13_Click(object sender, EventArgs e)
         {
             List<Manager> list = SaveGame.ReadManagerData();
-            textBox1.Text = "Club='" + list[list.Count - 1].club + "' AND (CRE+PAS+SET)>40";
+            textBox1.Text = "Club='" + list[list.Count - 1].club + "' AND (CRE+PAS+SET)>=35";
             dv.RowFilter = textBox1.Text;
 
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
             textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=15 AND SHO>=15 AND HEA>=10 AND STA>=10";
@@ -434,7 +451,7 @@ namespace cm
             tbTalent.Text = "";
             tbRep.Text = "";
             cbStatus.SelectedIndex = 0;
-            textBox2.Text = "";
+            tbAge.Text = "";
             foreach (Control c in splitContainer1.Panel2.Controls)
             {
                 if (c is NumericUpDown)
@@ -472,6 +489,53 @@ namespace cm
             List<Team> teamList = SaveGame.ReadTeamData(false,false);
             textBox1.Text = "Division='" + teamList[list[list.Count - 1].clubID].division + "'";
             dv.RowFilter = textBox1.Text;
+        }
+
+        private void updateAppToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string url = "https://github.com/cm2viewer/cm/releases/download/v1.0/cm.exe";
+            string exeName = System.Reflection.Assembly.GetEntryAssembly().Location;
+            byte[] b;
+            using (WebClient wc = new WebClient())
+            {
+                b = wc.DownloadData(url);                
+            }
+            if (b != null)
+            {
+                if (!b.SequenceEqual(File.ReadAllBytes(exeName)))
+                {
+                    if (File.Exists(exeName + ".bak")) File.Delete(exeName + ".bak");
+                    File.Move(exeName, exeName + ".bak");
+                    File.WriteAllBytes(exeName, b);
+                    MessageBox.Show("Application will restart now");
+                    Application.Restart();
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    MessageBox.Show("Application is the latest version");
+                }
+            }
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            DataRow dr = dt.NewRow();
+            dr["Name"] = "Average";
+            foreach (DataGridViewColumn col in sqlDatagridview1.Columns)
+            {
+                switch (SqlDataGridView.GetValueType(col.ValueType))
+                {
+                    case "Double":
+                    case "Int":
+                        dr[col.Name] = dv.Table.Compute("Avg(" + col.Name + ")", textBox1.Text);
+                        break;
+
+                }
+            }
+
+            dv.Table.Rows.InsertAt(dr, 0);
         }
     }
 }

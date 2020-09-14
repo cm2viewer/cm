@@ -387,11 +387,11 @@ namespace cm
                             //big and con worth 2x value, subtract morale and character
                             player.skill += (player.Big + player.Con - player.Mor - player.Chr);
                             //fix injury prones and dirtiness 1-good 20-bad
-                            player.skill += (20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir);                            
+                            player.skill += (int)((20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir));                            
                             player.avg = (double)player.skill/24;
                             
-                            player.DDM_pot = (player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
-                            player.FC_pot = (player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
+                            player.DDM_pot = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
+                            player.FC_pot = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
                         }
                         playerList.Add(player);
                     }
