@@ -18,7 +18,7 @@ namespace cm
 
             SaveGame.path = Application.StartupPath + "\\";
             if (System.Diagnostics.Debugger.IsAttached)
-                SaveGame.path = "D:\\Download\\cm9798\\";
+                SaveGame.path = "C:\\Download\\cm9798\\";
 
             if (!System.IO.File.Exists(SaveGame.path + "GAMESS16.IDX"))
             {

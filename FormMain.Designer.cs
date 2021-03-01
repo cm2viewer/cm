@@ -47,8 +47,10 @@ namespace cm
             this.backupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fontSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.button17 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
             this.btnMyDivision = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
@@ -68,6 +70,14 @@ namespace cm
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.tbPrice = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.cbPosition = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cbSide = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.Rating = new System.Windows.Forms.NumericUpDown();
             this.cbForeign = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.tbTalent = new System.Windows.Forms.TextBox();
@@ -82,9 +92,6 @@ namespace cm
             this.label6 = new System.Windows.Forms.Label();
             this.tbAbility = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button17 = new System.Windows.Forms.Button();
-            this.Rating = new System.Windows.Forms.NumericUpDown();
-            this.label8 = new System.Windows.Forms.Label();
             this.sqlDatagridview1 = new SqlDataGridView();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -116,6 +123,7 @@ namespace cm
             this.searchTeamToolStripMenuItem,
             this.backupToolStripMenuItem,
             this.restoreToolStripMenuItem,
+            this.fontSizeToolStripMenuItem,
             this.updateAppToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -185,6 +193,12 @@ namespace cm
             this.updateAppToolStripMenuItem.Text = "Update App";
             this.updateAppToolStripMenuItem.Click += new System.EventHandler(this.updateAppToolStripMenuItem_Click);
             // 
+            // fontSizeToolStripMenuItem
+            // 
+            this.fontSizeToolStripMenuItem.Name = "fontSizeToolStripMenuItem";
+            this.fontSizeToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.fontSizeToolStripMenuItem.Text = "Font Size";
+            // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -236,6 +250,12 @@ namespace cm
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.tbPrice);
+            this.splitContainer1.Panel2.Controls.Add(this.label11);
+            this.splitContainer1.Panel2.Controls.Add(this.cbPosition);
+            this.splitContainer1.Panel2.Controls.Add(this.label9);
+            this.splitContainer1.Panel2.Controls.Add(this.cbSide);
+            this.splitContainer1.Panel2.Controls.Add(this.label10);
             this.splitContainer1.Panel2.Controls.Add(this.label8);
             this.splitContainer1.Panel2.Controls.Add(this.Rating);
             this.splitContainer1.Panel2.Controls.Add(this.cbForeign);
@@ -255,6 +275,16 @@ namespace cm
             this.splitContainer1.Size = new System.Drawing.Size(1035, 142);
             this.splitContainer1.SplitterDistance = 419;
             this.splitContainer1.TabIndex = 34;
+            // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(86, 121);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(88, 19);
+            this.button17.TabIndex = 64;
+            this.button17.Text = "Show Average";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
             // button16
             // 
@@ -444,6 +474,98 @@ namespace cm
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // tbPrice
+            // 
+            this.tbPrice.Location = new System.Drawing.Point(544, 95);
+            this.tbPrice.Name = "tbPrice";
+            this.tbPrice.Size = new System.Drawing.Size(56, 20);
+            this.tbPrice.TabIndex = 66;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(489, 98);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(58, 13);
+            this.label11.TabIndex = 67;
+            this.label11.Text = "Price (000)";
+            // 
+            // cbPosition
+            // 
+            this.cbPosition.FormattingEnabled = true;
+            this.cbPosition.Items.AddRange(new object[] {
+            "",
+            "GK",
+            "SW",
+            "D",
+            "DM",
+            "M",
+            "AM",
+            "S"});
+            this.cbPosition.Location = new System.Drawing.Point(427, 95);
+            this.cbPosition.Name = "cbPosition";
+            this.cbPosition.Size = new System.Drawing.Size(56, 21);
+            this.cbPosition.TabIndex = 64;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(379, 95);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(44, 13);
+            this.label9.TabIndex = 65;
+            this.label9.Text = "Position";
+            // 
+            // cbSide
+            // 
+            this.cbSide.FormattingEnabled = true;
+            this.cbSide.Items.AddRange(new object[] {
+            "",
+            "R",
+            "C",
+            "L"});
+            this.cbSide.Location = new System.Drawing.Point(427, 118);
+            this.cbSide.Name = "cbSide";
+            this.cbSide.Size = new System.Drawing.Size(56, 21);
+            this.cbSide.TabIndex = 62;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(379, 118);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(28, 13);
+            this.label10.TabIndex = 63;
+            this.label10.Text = "Side";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(165, 118);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(38, 13);
+            this.label8.TabIndex = 61;
+            this.label8.Text = "Rating";
+            // 
+            // Rating
+            // 
+            this.Rating.DecimalPlaces = 1;
+            this.Rating.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.Rating.Location = new System.Drawing.Point(207, 116);
+            this.Rating.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.Rating.Name = "Rating";
+            this.Rating.Size = new System.Drawing.Size(56, 20);
+            this.Rating.TabIndex = 60;
+            this.Rating.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // cbForeign
             // 
             this.cbForeign.FormattingEnabled = true;
@@ -571,44 +693,6 @@ namespace cm
             this.label4.Size = new System.Drawing.Size(34, 13);
             this.label4.TabIndex = 49;
             this.label4.Text = "Ability";
-            // 
-            // button17
-            // 
-            this.button17.Location = new System.Drawing.Point(86, 121);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(88, 19);
-            this.button17.TabIndex = 64;
-            this.button17.Text = "Show Average";
-            this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
-            // 
-            // Rating
-            // 
-            this.Rating.DecimalPlaces = 1;
-            this.Rating.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.Rating.Location = new System.Drawing.Point(207, 116);
-            this.Rating.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.Rating.Name = "Rating";
-            this.Rating.Size = new System.Drawing.Size(56, 20);
-            this.Rating.TabIndex = 60;
-            this.Rating.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(165, 118);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(38, 13);
-            this.label8.TabIndex = 61;
-            this.label8.Text = "Rating";
             // 
             // sqlDatagridview1
             // 
@@ -756,5 +840,12 @@ namespace cm
         private Button button17;
         private Label label8;
         private NumericUpDown Rating;
+        private TextBox tbPrice;
+        private Label label11;
+        private ComboBox cbPosition;
+        private Label label9;
+        private ComboBox cbSide;
+        private Label label10;
+        private ToolStripMenuItem fontSizeToolStripMenuItem;
     }
 }

@@ -54,8 +54,21 @@ namespace cm
             cbStatus.TextChanged += (s, ex) => filter();
             cbForeign.TextChanged += (s, ex) => filter();
             Rating.ValueChanged += (s, ex) => filter();
+            cbPosition.TextChanged += (s, ex) => filter();
+            cbSide.TextChanged += (s, ex) => filter();
+            tbPrice.TextChanged += (s, ex) => filter();
+            int[] list = { 6,7,8, 9, 10, 11,12,13,14 };
+            foreach (int i in list)
+                fontSizeToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(i.ToString(),null, FontSizeDropDown_Click));
         }
+        public void FontSizeDropDown_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
+            Font f = new Font(sqlDatagridview1.DefaultCellStyle.Font.FontFamily, float.Parse(clickedItem.Text));
+            sqlDatagridview1.DefaultCellStyle.Font = f;
+            
 
+        }
         public void SetButtons()
         {
             button1.Enabled = (dt.TableName == "Player");
@@ -132,6 +145,8 @@ namespace cm
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND AGE<=(.*)", "");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND FGN='(.*)'", "");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND Rating>=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND (GK|SW|D|DM|M|AM|S|R|L|C)>=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND PRICE<=(.*)", "");
                 foreach (Control c in splitContainer1.Panel2.Controls)
                 {
                     if (c is NumericUpDown)
@@ -152,21 +167,9 @@ namespace cm
                
                 if (tbAbility.Text != "") textBox1.Text += " AND ABI>=" + tbAbility.Text;
                 if (tbPotential.Text != "") textBox1.Text += " AND POT>=" + tbPotential.Text;
-                if (tbRep.Text != "")
-                {
-                    TextBox textBox3 = textBox1;
-                    textBox3.Text = textBox3.Text + " AND REP<=" + tbRep.Text;
-                }
-                if (tbTalent.Text != "")
-                {
-                    TextBox textBox4 = textBox1;
-                    textBox4.Text = textBox4.Text + " AND TAL<=" + tbTalent.Text;
-                }
-                if (this.tbAge.Text != "")
-                {
-                    TextBox textBox5 = textBox1;
-                    textBox5.Text = textBox5.Text + " AND AGE<=" + this.tbAge.Text;
-                }
+                if (tbRep.Text != "") textBox1.Text += " AND REP<=" + tbRep.Text;
+                if (tbTalent.Text != "") textBox1.Text += " AND TAL<=" + tbTalent.Text;
+                if (this.tbAge.Text != "") textBox1.Text += " AND AGE<=" + this.tbAge.Text;
                 if (cbStatus.SelectedItem != null)
                 {
                     textBox1.Text = Regex.Replace(textBox1.Text, " AND TRF([<=>]+'[A-Z/]+')", "");
@@ -187,6 +190,12 @@ namespace cm
                 }
                 if (cbForeign.SelectedItem != null && !cbForeign.SelectedItem.Equals(""))
                     textBox1.Text += " AND FGN='" + cbForeign.SelectedItem + "'";
+                if (cbPosition.SelectedItem != null && !cbPosition.SelectedItem.Equals(""))
+                    textBox1.Text += " AND " + cbPosition.SelectedItem + ">=1";
+                if (cbSide.SelectedItem != null && !cbSide.SelectedItem.Equals(""))
+                    textBox1.Text += " AND " + cbSide.SelectedItem + ">=1";
+                if (tbPrice.Text != "") textBox1.Text += " AND PRICE<=" + (int.Parse(tbPrice.Text)*1000);
+
             }
 
             textBox1.Text = Regex.Replace(textBox1.Text, "^ AND ", "",RegexOptions.IgnoreCase);
@@ -537,5 +546,7 @@ namespace cm
 
             dv.Table.Rows.InsertAt(dr, 0);
         }
+
+        
     }
 }
