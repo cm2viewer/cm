@@ -132,21 +132,22 @@ namespace cm
             if (dt.TableName == "Player")
             {
                 if (!textBox1.Text.Trim().Equals(""))
-                    textBox1.Text = " AND " + textBox1.Text;
+                    textBox1.Text = " AND " + textBox1.Text + " ";
                 for (int i = 0; i < Player.skillName.Length; i++)
                 {
                     textBox1.Text = Regex.Replace(textBox1.Text,
                         " AND " + Player.skillName[i] + ">=([0-9]+)", "");
                 }
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND ABI>=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND POT>=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND REP<=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND TAL<=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND AGE<=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND FGN='(.*)'", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND Rating>=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND (GK|SW|D|DM|M|AM|S|R|L|C)>=(.*)", "");
-                textBox1.Text = Regex.Replace(textBox1.Text, " AND PRICE<=(.*)", "");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND ABI>=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND POT>=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND REP<=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND TAL<=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND AGE<=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND FGN='(.*)' ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND CN='(.*)' ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND Rating>=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND (GK|SW|D|DM|M|AM|S|R|L|C)>=(.*) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND PRICE<=([0-9].*) ", " ");
                 foreach (Control c in splitContainer1.Panel2.Controls)
                 {
                     if (c is NumericUpDown)
@@ -154,7 +155,7 @@ namespace cm
                         NumericUpDown nud = (NumericUpDown)c;
                         if (nud.Value > 0)
                         {
-                            textBox1.Text = Regex.Replace(textBox1.Text, " AND " + nud.Name.ToUpper() + "([<>])=([0-9,.]+)", "");
+                            textBox1.Text = Regex.Replace(textBox1.Text, " AND " + nud.Name.ToUpper() + "([<>])=([0-9,.]+) ", " ");
                             String s = textBox1.Text;
                             if (nud.Name.Equals("Dir") || nud.Name.Equals("Inj"))
                                 textBox1.Text = s + " AND " + nud.Name.ToUpper() + "<=" + nud.Value.ToString().Replace(',','.');
@@ -170,10 +171,11 @@ namespace cm
                 if (tbRep.Text != "") textBox1.Text += " AND REP<=" + tbRep.Text;
                 if (tbTalent.Text != "") textBox1.Text += " AND TAL<=" + tbTalent.Text;
                 if (this.tbAge.Text != "") textBox1.Text += " AND AGE<=" + this.tbAge.Text;
+                textBox1.Text = textBox1.Text.Trim();
                 if (cbStatus.SelectedItem != null)
                 {
-                    textBox1.Text = Regex.Replace(textBox1.Text, " AND TRF([<=>]+'[A-Z/]+')", "");
-                    textBox1.Text = Regex.Replace(textBox1.Text, " AND (\\(TRF.+ OR .+\\))", "");
+                    textBox1.Text = Regex.Replace(textBox1.Text, " AND TRF([<=>]+'[A-Z/]+') ", " ");
+                    textBox1.Text = Regex.Replace(textBox1.Text, " AND (\\(TRF.+ OR .+\\)) ", " ");
                     if (cbStatus.SelectedItem.ToString() == "<>N/A")
                     {
                         textBox1.Text += " AND TRF<>'N/A'";
@@ -189,16 +191,28 @@ namespace cm
                     }
                 }
                 if (cbForeign.SelectedItem != null && !cbForeign.SelectedItem.Equals(""))
-                    textBox1.Text += " AND FGN='" + cbForeign.SelectedItem + "'";
+                {
+                    if (cbForeign.SelectedItem.Equals("my country"))
+                    {
+                        List<Manager> list = SaveGame.ReadManagerData();
+                        textBox1.Text += " AND CN='" + list[list.Count - 1].cn + "'";
+                    }
+                    else
+                        textBox1.Text += " AND FGN='" + cbForeign.SelectedItem + "'";
+                }
                 if (cbPosition.SelectedItem != null && !cbPosition.SelectedItem.Equals(""))
                     textBox1.Text += " AND " + cbPosition.SelectedItem + ">=1";
                 if (cbSide.SelectedItem != null && !cbSide.SelectedItem.Equals(""))
                     textBox1.Text += " AND " + cbSide.SelectedItem + ">=1";
-                if (tbPrice.Text != "") textBox1.Text += " AND PRICE<=" + (int.Parse(tbPrice.Text)*1000);
+                if (tbPrice.Text != "")
+                {
+                    int price = int.TryParse(tbPrice.Text, out price) ? price * 1000 : 0;
+                    textBox1.Text += " AND PRICE<=" + price;
+                }
 
             }
 
-            textBox1.Text = Regex.Replace(textBox1.Text, "^ AND ", "",RegexOptions.IgnoreCase);
+            textBox1.Text = Regex.Replace(textBox1.Text.Trim(), "^AND ", "",RegexOptions.IgnoreCase);
             try
             {
                 dv.RowFilter = textBox1.Text + (textBox1.Text.Equals("")?"": " OR Name = 'Average'") ;
@@ -453,20 +467,17 @@ namespace cm
         }
 
         private void button10_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "";
-            tbAbility.Text = "";
-            tbPotential.Text = "";
-            tbTalent.Text = "";
-            tbRep.Text = "";
-            cbStatus.SelectedIndex = 0;
-            tbAge.Text = "";
+        {           
             foreach (Control c in splitContainer1.Panel2.Controls)
             {
                 if (c is NumericUpDown)
                 {
                     ((NumericUpDown)c).Value = 0;
                 }
+                else if (c is TextBox)
+                    ((TextBox)c).Text = ""; 
+                else if (c is ComboBox)
+                    ((ComboBox)c).SelectedIndex = 0;
             }
             filter();
         }

@@ -46,8 +46,8 @@ namespace cm
             this.searchTeamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.button17 = new System.Windows.Forms.Button();
@@ -186,18 +186,18 @@ namespace cm
             this.restoreToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.restoreToolStripMenuItem.Text = "Restore";
             // 
+            // fontSizeToolStripMenuItem
+            // 
+            this.fontSizeToolStripMenuItem.Name = "fontSizeToolStripMenuItem";
+            this.fontSizeToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.fontSizeToolStripMenuItem.Text = "Font Size";
+            // 
             // updateAppToolStripMenuItem
             // 
             this.updateAppToolStripMenuItem.Name = "updateAppToolStripMenuItem";
             this.updateAppToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
             this.updateAppToolStripMenuItem.Text = "Update App";
             this.updateAppToolStripMenuItem.Click += new System.EventHandler(this.updateAppToolStripMenuItem_Click);
-            // 
-            // fontSizeToolStripMenuItem
-            // 
-            this.fontSizeToolStripMenuItem.Name = "fontSizeToolStripMenuItem";
-            this.fontSizeToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
-            this.fontSizeToolStripMenuItem.Text = "Font Size";
             // 
             // splitContainer2
             // 
@@ -572,7 +572,8 @@ namespace cm
             this.cbForeign.Items.AddRange(new object[] {
             "",
             "yes",
-            "no"});
+            "no",
+            "my country"});
             this.cbForeign.Location = new System.Drawing.Point(317, 95);
             this.cbForeign.Name = "cbForeign";
             this.cbForeign.Size = new System.Drawing.Size(56, 21);
