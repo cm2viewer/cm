@@ -93,6 +93,8 @@ namespace cm
             this.tbAbility = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.sqlDatagridview1 = new SqlDataGridView();
+            this.tbSkill = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -114,6 +116,7 @@ namespace cm
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.playerDBToolStripMenuItem,
             this.teamDBToolStripMenuItem,
@@ -127,6 +130,7 @@ namespace cm
             this.updateAppToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(1035, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
@@ -250,6 +254,8 @@ namespace cm
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.tbSkill);
+            this.splitContainer1.Panel2.Controls.Add(this.label12);
             this.splitContainer1.Panel2.Controls.Add(this.tbPrice);
             this.splitContainer1.Panel2.Controls.Add(this.label11);
             this.splitContainer1.Panel2.Controls.Add(this.cbPosition);
@@ -703,7 +709,7 @@ namespace cm
             this.sqlDatagridview1.BackgroundColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Verdana", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -712,7 +718,7 @@ namespace cm
             this.sqlDatagridview1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Verdana", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Verdana", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -733,6 +739,7 @@ namespace cm
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.sqlDatagridview1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.sqlDatagridview1.RowHeadersVisible = false;
+            this.sqlDatagridview1.RowHeadersWidth = 51;
             this.sqlDatagridview1.RowTemplate.Height = 16;
             this.sqlDatagridview1.RowTemplate.ReadOnly = true;
             this.sqlDatagridview1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -741,6 +748,22 @@ namespace cm
             this.sqlDatagridview1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.sqlDatagridview1_CellContentDoubleClick);
             this.sqlDatagridview1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.sqlDatagridview1_CellContentClick);
             this.sqlDatagridview1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.sqlDatagridview1_CellContentClick);
+            // 
+            // tbSkill
+            // 
+            this.tbSkill.Location = new System.Drawing.Point(544, 120);
+            this.tbSkill.Name = "tbSkill";
+            this.tbSkill.Size = new System.Drawing.Size(56, 20);
+            this.tbSkill.TabIndex = 68;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(489, 123);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(53, 13);
+            this.label12.TabIndex = 69;
+            this.label12.Text = "Total Skill";
             // 
             // FormMain
             // 
@@ -848,5 +871,7 @@ namespace cm
         private ComboBox cbSide;
         private Label label10;
         private ToolStripMenuItem fontSizeToolStripMenuItem;
+        private TextBox tbSkill;
+        private Label label12;
     }
 }

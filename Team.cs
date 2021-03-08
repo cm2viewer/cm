@@ -20,6 +20,8 @@ namespace cm
         public byte EEC;
         [FieldOffset(37)]
         public ushort manager;
+        [FieldOffset(40)]
+        public byte unknown; //increase after end of month
         [FieldOffset(60)]
         public byte pop;
         [FieldOffset(61)]
@@ -39,12 +41,42 @@ namespace cm
         [FieldOffset(105)]
         public byte prev_division_position;
 
-        [FieldOffset(216)]
-        public ushort shortlist;
         [FieldOffset(218)]
-        public unsafe fixed ushort p1[32];
-        [FieldOffset(297)]
-        public unsafe fixed ushort p2[22];
+        public unsafe fixed ushort squad[32];
+        [FieldOffset(288)]
+        public ushort numofplayers;
+        [FieldOffset(377)]
+        public ushort shortlist0;
+        [FieldOffset(382)]
+        public ushort shortlist1;
+        [FieldOffset(387)]
+        public ushort shortlist2;
+        [FieldOffset(392)]
+        public ushort shortlist3;
+        [FieldOffset(397)]
+        public ushort shortlist4;
+        [FieldOffset(402)]
+        public ushort shortlist5;
+        [FieldOffset(407)]
+        public ushort shortlist6;
+        [FieldOffset(412)]
+        public ushort shortlist7;
+        [FieldOffset(417)]
+        public ushort shortlist8;
+        [FieldOffset(422)]
+        public ushort shortlist9;
+        [FieldOffset(427)]
+        public ushort shortlist10;
+        [FieldOffset(432)]
+        public ushort shortlist11;
+        [FieldOffset(437)]
+        public ushort shortlist12;
+        [FieldOffset(442)]
+        public ushort shortlist13;
+        [FieldOffset(447)]
+        public ushort shortlist14;
+        [FieldOffset(452)]
+        public ushort shortlist15;
 
         [FieldOffset(467)]
         public double season_ticket;
@@ -95,8 +127,7 @@ namespace cm
         public int val { get; set; }
         public int balance { get; set; }
         public int player_sales { get; set; }
-        public ushort shortlist { get; set; }
-        public string p1 { get; set; }
-        public string p2 { get; set; }
+        public string squad { get; set; }
+        public string shortlist { get; set; }
     }
 }

@@ -41,10 +41,14 @@ namespace cm
         public ushort unknown3;
         [FieldOffset(68)]
         public double wage;
+        [FieldOffset(87)]
+        public byte bcr;    //big-club release clause
         [FieldOffset(122)]
         public double price;
         [FieldOffset(138)]
         public byte status;
+        [FieldOffset(139)]
+        public byte interested; //how many club interested
         [FieldOffset(234)]
         public fixed byte skill[24];
         //[FieldOffset(242)]
@@ -100,12 +104,15 @@ namespace cm
         public byte Chr { get; set; }
         public byte Mor { get; set; }
         public string TRF { get; set; }
+        public int buy { get; set; }
         public int price { get; set; }
         public double rating { get; set; }
-        public int wage { get; set; }
+        public string bcr { get; set; }
         public string club { get; set; }
         public string club_cn { get; set; }
         public string division { get; set; }
+        public int wage { get; set; }
+
         public string fgn { get; set; }
         public byte caps { get; set; }
 
@@ -145,6 +152,8 @@ namespace cm
 
         public int teamval { get; set; }
         public string sell { get; set; }
+        public int ID { get; set; }
+
     }
-   
+
 }

@@ -171,7 +171,6 @@ namespace cm
                             team.supp = t.supp;
                             team.cap = t.cap;
                             team.seat = t.seat;
-                            team.shortlist = t.shortlist;
                             //team.val = (int)t.val;
                             team.player_sales = (int)t.player_sales;
                             team.balance = (int)(t.start_balance + t.season_ticket + t.gate_receipt + t.tv_prize + t.player_sales + t.other_income);
@@ -182,20 +181,30 @@ namespace cm
                         }
                         if (ReadPlayerName)
                         { 
-                            for (int j = 0; j < 32; j++)
+                            for (int j = 0; j < t.numofplayers; j++)
                             {
-                                if (t.p1[j] < playerNameList.Count && t.p1[j] > 1)
+                                if (t.squad[j] < playerNameList.Count && t.squad[j] > 1)
                                 {
-                                    team.p1 = team.p1 + "," + playerNameList[t.p1[j]].Name;
+                                    team.squad = team.squad + "," + playerNameList[t.squad[j]].Name;
                                 }
                             }
-                            for (int k = 0; k < 22; k++)
-                            {
-                                if (t.p2[k] < playerNameList.Count && t.p2[k] > 1)
-                                {
-                                    team.p2 = team.p2 + "," + playerNameList[t.p2[k]].Name;
-                                }
-                            }
+                            if (t.shortlist0 < playerNameList.Count && t.shortlist0 > 1) team.shortlist += "," + playerNameList[t.shortlist0].Name;
+                            if (t.shortlist1 < playerNameList.Count && t.shortlist1 > 1) team.shortlist += "," + playerNameList[t.shortlist1].Name;
+                            if (t.shortlist2 < playerNameList.Count && t.shortlist2 > 1) team.shortlist += "," + playerNameList[t.shortlist2].Name;
+                            if (t.shortlist3 < playerNameList.Count && t.shortlist3 > 1) team.shortlist += "," + playerNameList[t.shortlist3].Name;
+                            if (t.shortlist4 < playerNameList.Count && t.shortlist4 > 1) team.shortlist += "," + playerNameList[t.shortlist4].Name;
+                            if (t.shortlist5 < playerNameList.Count && t.shortlist5 > 1) team.shortlist += "," + playerNameList[t.shortlist5].Name;
+                            if (t.shortlist6 < playerNameList.Count && t.shortlist6 > 1) team.shortlist += "," + playerNameList[t.shortlist6].Name;
+                            if (t.shortlist7 < playerNameList.Count && t.shortlist7 > 1) team.shortlist += "," + playerNameList[t.shortlist7].Name;
+                            if (t.shortlist8 < playerNameList.Count && t.shortlist8 > 1) team.shortlist += "," + playerNameList[t.shortlist8].Name;
+                            if (t.shortlist9 < playerNameList.Count && t.shortlist9 > 1) team.shortlist += "," + playerNameList[t.shortlist9].Name;
+                            if (t.shortlist10 < playerNameList.Count && t.shortlist10 > 1) team.shortlist += "," + playerNameList[t.shortlist10].Name;
+                            if (t.shortlist11 < playerNameList.Count && t.shortlist11 > 1) team.shortlist += "," + playerNameList[t.shortlist11].Name;
+                            if (t.shortlist12 < playerNameList.Count && t.shortlist12 > 1) team.shortlist += "," + playerNameList[t.shortlist12].Name;
+                            if (t.shortlist13 < playerNameList.Count && t.shortlist13 > 1) team.shortlist += "," + playerNameList[t.shortlist13].Name;
+                            if (t.shortlist14 < playerNameList.Count && t.shortlist14 > 1) team.shortlist += "," + playerNameList[t.shortlist14].Name;
+                            if (t.shortlist15 < playerNameList.Count && t.shortlist15 > 1) team.shortlist += "," + playerNameList[t.shortlist15].Name;
+                            
                         }
                         teamList.Add(team);
                     }
@@ -244,6 +253,7 @@ namespace cm
                     {
                         Player player = new Player();
                         player.Name = reader.ReadName();
+                        player.ID = i;
                         Data data = reader.ReadStruct<Data>(360);
                         if (!ReadNameOnly)
                         {
@@ -300,6 +310,7 @@ namespace cm
                             player.teamval = (int)teamList[data.club].val;
                             player.price = (int)Math.Round(data.price);
                             player.wage = (int)data.wage;
+                            player.bcr = (data.bcr == 1?"yes":"no");
                             player.apps = data.domapps + data.euapps;
                             player.goal = data.domgoals + data.eugoals;
                             player.asst = data.domasst + data.euasst;
@@ -317,6 +328,7 @@ namespace cm
                                 player.age = new DateTime(curDate.Subtract(new DateTime(data.yy + 1900, data.mm, data.dd)).Ticks).Year - 1;
                             }
                             catch { }
+                            player.buy = data.interested;
                             switch (data.status)
                             {
                                 case 0:
