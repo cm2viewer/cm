@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace cm
 {
@@ -58,9 +59,35 @@ namespace cm
             SetValue(d, label38, textBox38, "Apps");
             SetValue(d, label39, textBox39, "Goal");
             SetValue(d, label40, textBox40, "Asst");
+            SetValue(d, label43, textBox42, "Injury");
             label41.Text= "Goal/App";
             double ratio = ((double)(int)d.Cells["Goal"].Value) / (int)d.Cells["Apps"].Value;
             textBox41.Text = ratio.ToString("N2");
+
+
+            if (int.Parse(d.Cells["Buy"].Value.ToString()) > 0)
+            {
+                string name = d.Cells["Name"].Value.ToString();
+                List<Team> teamList = SaveGame.ReadTeamData(false, true);
+                string interestedClub = "";
+                for (int i = 0; i < teamList.Count; i++)
+                {
+                    if (teamList[i].shortlist != null && teamList[i].shortlist.Contains("," + name))
+                    {
+                        interestedClub += teamList[i].name + " - " + teamList[i].division + ", ";
+                    }
+                }
+                tbInterested.Text = interestedClub;
+            }
+
+            String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
+            if (File.Exists(filename))
+            {
+                if (File.ReadAllText(filename).Contains(labelName.Text))
+                {
+                    btnShortlist.Text = "Remove shortlist";
+                }    
+            }    
         }
 
         public void SetValue(DataGridViewRow d, Label lbl, TextBox tb, string s)
@@ -96,6 +123,22 @@ namespace cm
             Close();
         }
 
-        
+        private void btnShortlist_Click(object sender, EventArgs e)
+        {
+            String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
+            if (btnShortlist.Text == "Add to shortlist")
+            {
+                using (StreamWriter sw = File.AppendText(filename))
+                {
+                    sw.WriteLine(labelName.Text);
+                }
+                btnShortlist.Text = "Remove shortlist";
+            }
+            else
+            {
+                File.WriteAllText(filename, File.ReadAllText(filename).Replace(labelName.Text + "\r\n", ""));
+                btnShortlist.Text = "Add to shortlist";
+            }
+        }
     }
 }

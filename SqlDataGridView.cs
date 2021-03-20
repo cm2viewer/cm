@@ -280,6 +280,7 @@ public class SqlDataGridView : DataGridView
                             e.Row.Cells[sTmp[i]].Value = sValues[i];
                             break;
                         case "System.Byte":
+                        case "System.SByte":
                         case "System.Int16":
                         case "System.UInt16":
                         case "System.Int32":

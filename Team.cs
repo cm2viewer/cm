@@ -45,6 +45,8 @@ namespace cm
         public unsafe fixed ushort squad[32];
         [FieldOffset(288)]
         public ushort numofplayers;
+        [FieldOffset(290)]
+        public byte reputation;   //club current reputation, determine 'big club release' contract, etc
         [FieldOffset(377)]
         public ushort shortlist0;
         [FieldOffset(382)]
@@ -85,7 +87,7 @@ namespace cm
         [FieldOffset(483)]
         public double tv_prize;
         [FieldOffset(499)]
-        public double player_sales;
+        public double player_sales; //amount of money seems to effect big club release clause for player below 150 potential
         [FieldOffset(507)]
         public double other_income;
         [FieldOffset(515)]
@@ -94,6 +96,8 @@ namespace cm
         public double player_bonus;
         [FieldOffset(531)]
         public double player_purchase;
+        [FieldOffset(535)]
+        public double unknown7; 
         [FieldOffset(539)]
         public double other_cost;
 
@@ -122,12 +126,14 @@ namespace cm
         public byte pop { get; set; }
         public byte flex { get; set; }
         public byte supp { get; set; }
+        public byte rep { get; set; }
         public ushort cap { get; set; }
         public ushort seat { get; set; }
         public int val { get; set; }
         public int balance { get; set; }
         public int player_sales { get; set; }
-        public string squad { get; set; }
         public string shortlist { get; set; }
+        public string squad { get; set; }
+
     }
 }

@@ -22,7 +22,8 @@ namespace cm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Text += " - " + SaveGame.ReadSaveGameList().First(s => s.index == SaveGame.SelectedSaveGame).SaveName;
+            SaveGame game = SaveGame.ReadSaveGameList().First(s => s.index == SaveGame.SelectedSaveGame);
+            this.Text = "CM2 Viewer - " + game.SaveName + " (" + game.SaveDateTime.ToLongDateString() +")";
             Bind(SaveGame.ReadPlayersData(ReadNameOnly: false));
             PopulateRestore(); 
             for (int i=0;i<Player.skillName.Length;i++)
@@ -163,6 +164,7 @@ namespace cm
                     if (c is NumericUpDown)
                     {
                         NumericUpDown nud = (NumericUpDown)c;
+
                         if (nud.Value > 0)
                         {
                             textBox1.Text = Regex.Replace(textBox1.Text, " AND " + nud.Name.ToUpper() + "([<>])=([0-9,.]+)", "");
@@ -171,6 +173,8 @@ namespace cm
                             else
                                 textBox1.Text += " AND " + nud.Name.ToUpper() + ">=" + nud.Value.ToString().Replace(',', '.');
                         }
+                        else
+                            textBox1.Text = Regex.Replace(textBox1.Text + " ", " AND " + nud.Name.ToUpper() + "([<>])=1 ", " ").TrimEnd();
                     }
                 }
                 
@@ -182,7 +186,9 @@ namespace cm
                 if (tbAge.Text != "") textBox1.Text += " AND AGE<=" + tbAge.Text;                
                 if (cbStatus.SelectedItem != null)
                 {
-                    if (cbStatus.SelectedItem.ToString() == "<>N/A")
+                    if (cbStatus.SelectedItem.ToString() == "LIST")
+                        textBox1.Text += " AND (TRF='CLU' OR TRF='REQ')";
+                    else if (cbStatus.SelectedItem.ToString() == "<>N/A")
                         textBox1.Text += " AND TRF<>'N/A'";
                     else if (cbStatus.SelectedItem.ToString() == "CHEAP")
                         textBox1.Text += " AND (TRF='FRE' OR PRICE<100000)";
@@ -253,18 +259,21 @@ namespace cm
 
         private void button15_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>70";
+            //MRL CRE 15 DET 15 OFF 15 PASS 15 POSI 10 TAC 10 PAC 10
+            //MC CRE 6 DET 15 OFF 15 POS 15 TAC 10 PAC 10 PASS 10
+            //80x1.5 + 60 = max 180 50% 66% 75%
+            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>140";
             filter();
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>60";
+            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>120";
             filter();
         }
         private void button16_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND (CRE+OFF+PAC+POSI+SHO)>50";
+            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>90";
             filter();
         }
 
@@ -301,10 +310,6 @@ namespace cm
 
      
 
-        private void sqlDatagridview1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-        }
-
         private void sqlDatagridview1_CellContentClick(object sender, MouseEventArgs e)
         {
             if ((e.Clicks == 2 && e.Button == MouseButtons.Left) || e.Button == MouseButtons.Right)
@@ -320,7 +325,7 @@ namespace cm
                         {
                             if (teamList[i].shortlist!=null && teamList[i].shortlist.Contains(","+name))
                             {
-                                interestedClub += teamList[i].name + "\n";
+                                interestedClub += teamList[i].name + " - " + teamList[i].division + "\n";
                             }
                         }
                         MessageBox.Show(interestedClub, "Interested Club");
@@ -355,6 +360,8 @@ namespace cm
         private void playerDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Bind(SaveGame.ReadPlayersData(ReadNameOnly: false));
+            SaveGame game = SaveGame.ReadSaveGameList().First(s => s.index == SaveGame.SelectedSaveGame);
+            this.Text = "CM2 Viewer - " + game.SaveName + " (" + game.SaveDateTime.ToLongDateString() + ")";
         }
 
         private void teamDBToolStripMenuItem_Click(object sender, EventArgs e)
@@ -383,15 +390,16 @@ namespace cm
 
         private void searchTeamToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dt.TableName == "Player")
+            string value = "";
+            if (Helper.InputBox("", "", ref value) == DialogResult.OK)
             {
-                string value = "";
-                if (Helper.InputBox("", "", ref value) == DialogResult.OK)
-                {
+                if (dt.TableName == "Team")
+                    textBox1.Text = "Name LIKE '%" + value + "%'";
+                else
                     textBox1.Text = "CLUB LIKE '%" + value + "%'";
-                    dv.RowFilter = textBox1.Text;
-                }
+                dv.RowFilter = textBox1.Text;
             }
+            
         }
 
         private void backupToolStripMenuItem_Click(object sender, EventArgs e)
@@ -404,33 +412,12 @@ namespace cm
             if (File.Exists(fileName)) File.Delete(fileName);
             using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Create))
             {
-                foreach (var file in Directory.GetFiles(SaveGame.path, "*" + SaveGame.SelectedSaveGame + ".S16"))
+                foreach (var file in Directory.GetFiles(SaveGame.path, "??????" + SaveGame.SelectedSaveGame.ToString() + ".S16"))
                 {
                     zip.CreateEntryFromFile(file, Path.GetFileName(file), CompressionLevel.Optimal);
                 }
             }
 
-            /*
-            if (value != "")
-            {
-                text = text + " " + value;
-            }
-            string path = "D:\\Download\\cm9798\\";
-            if (!Directory.Exists(text))
-            {
-                Directory.CreateDirectory(text);
-            }
-            if (Directory.Exists(path))
-            {
-                string[] files = Directory.GetFiles(path, "*7.S16");
-                string[] array = files;
-                foreach (string text2 in array)
-                {
-                    string destFileName = Path.Combine(text, Path.GetFileName(text2));
-                    File.Copy(text2, destFileName, overwrite: true);
-                }
-            }
-            */
             PopulateRestore();
             MessageBox.Show("done backup to " + fileName);
         }
@@ -457,6 +444,7 @@ namespace cm
                     restore(name);
                 };
             }
+
         }
 
         private void restore(string name)
@@ -484,7 +472,9 @@ namespace cm
                     }
                 }
             }
-            MessageBox.Show("done restore from " + name);
+            //reload datagridview
+            playerDBToolStripMenuItem.PerformClick();
+            //MessageBox.Show("done restore from " + name);
         }
 
         private void button10_Click(object sender, EventArgs e)
@@ -525,11 +515,20 @@ namespace cm
             
         }
 
-        private void btnMyDivision_Click(object sender, EventArgs e)
+        private void btnMyShortlist_Click(object sender, EventArgs e)
         {
-            List<Manager> list = SaveGame.ReadManagerData();
-            List<Team> teamList = SaveGame.ReadTeamData(false,false);
-            textBox1.Text = "Division='" + teamList[list[list.Count - 1].clubID].division + "'";
+            List<Manager> managerlist = SaveGame.ReadManagerData();
+            List<Team> teamList = SaveGame.ReadTeamData(false,true);
+            Team myTeam = teamList[managerlist[managerlist.Count - 1].clubID];
+
+            String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
+            string additionalShortlist = "";
+            if (File.Exists(filename))
+            {
+                additionalShortlist = File.ReadAllText(filename).Replace("\r\n", ",");
+            }    
+            textBox1.Text = "Name IN ('" + (additionalShortlist + myTeam.shortlist).Replace("'","''").Replace(",,",",").Replace(",", "','") + "')";
+
             dv.RowFilter = textBox1.Text;
         }
 
@@ -580,6 +579,19 @@ namespace cm
             dv.Table.Rows.InsertAt(dr, 0);
         }
 
-        
+        private void localAppUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string exeName = System.Reflection.Assembly.GetEntryAssembly().Location;
+            String filename = "c:\\repos\\bin\\debug\\cm.exe";
+            if (File.Exists(filename))
+            {
+
+                if (File.Exists(exeName + ".bak")) File.Delete(exeName + ".bak");
+                File.Move(exeName, exeName + ".bak");
+                File.Copy(filename, exeName);
+                Application.Restart();
+                Environment.Exit(0);
+            }
+        }
     }
 }

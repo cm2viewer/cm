@@ -178,6 +178,7 @@ namespace cm
                             if (t.division < competitionList.Count && t.division >1)
                                 team.division = competitionList[t.division].name2;
                             team.EEC = t.EEC;
+                            team.rep = t.reputation;
                         }
                         if (ReadPlayerName)
                         { 
@@ -253,7 +254,7 @@ namespace cm
                     {
                         Player player = new Player();
                         player.Name = reader.ReadName();
-                        player.ID = i;
+                        //player.ID = i;
                         Data data = reader.ReadStruct<Data>(360);
                         if (!ReadNameOnly)
                         {
@@ -308,21 +309,26 @@ namespace cm
                             player.tal = data.talent;
                             player.caps = data.caps;
                             player.teamval = (int)teamList[data.club].val;
+                            player.CLBREP = teamList[data.club].rep;
+                            player.play = data.play;
                             player.price = (int)Math.Round(data.price);
                             player.wage = (int)data.wage;
                             player.bcr = (data.bcr == 1?"yes":"no");
-                            player.apps = data.domapps + data.euapps;
-                            player.goal = data.domgoals + data.eugoals;
-                            player.asst = data.domasst + data.euasst;
-                            if (data.domapps > 0 || data.euapps > 0)
+                            player.apps = data.domapps + data.eu_apps;
+                            player.goal = data.domgoals + data.eu_goals;
+                            player.asst = data.domasst + data.eu_asst;
+                            if (data.domapps > 0 || data.eu_apps > 0)
                             {
-                                player.rating = Math.Round((double)(data.domrate + data.eurate) / (double)(data.domapps + data.euapps),2);
+                                player.rating = Math.Round((double)(data.domrate + data.eu_rating) / (double)(data.domapps + data.eu_apps),2);
                             }
+                            player.injury = data.injury_length;
+                            player.phy = data.physicalcondition;
+                            player.recovery = (double)data.recovery_percentage/100;
                             player.cn = teamList[data.cn].name;
                             player.fgn = (teamList[data.cn].EEC == 0 ? "yes" : "no");
                             player.club = teamList[data.club].name;
                             player.club_cn = teamList[data.club].cn;
-                            player.division = teamList[data.club].division;
+                            player.div = teamList[data.club].division;
                             try
                             {
                                 player.age = new DateTime(curDate.Subtract(new DateTime(data.yy + 1900, data.mm, data.dd)).Ticks).Year - 1;
@@ -402,8 +408,8 @@ namespace cm
                             player.skill += (int)((20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir));                            
                             player.avg = (double)player.skill/24;
                             
-                            player.DDM_pot = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
-                            player.FC_pot = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
+                            player.DDM = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
+                            player.FC = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
                         }
                         playerList.Add(player);
                     }
