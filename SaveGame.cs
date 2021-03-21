@@ -331,9 +331,15 @@ namespace cm
                             player.div = teamList[data.club].division;
                             try
                             {
-                                player.age = new DateTime(curDate.Subtract(new DateTime(data.yy + 1900, data.mm, data.dd)).Ticks).Year - 1;
+                                player.age = new DateTime(curDate.Subtract(new DateTime(data.yy + 1900, data.mm, Math.Max(1,(int)data.dd))).Ticks).Year - 1;
+                                player.join = new DateTime(data.joindate_yy + 1900, data.joindate_mm, Math.Max(1,(int)data.joindate_dd));
+                                player.days = curDate.Subtract(new DateTime(data.joindate_yy + 1900, data.joindate_mm, Math.Max(1, (int)data.joindate_dd))).Days;
+                                //player.months= curDate.Subtract(new DateTime(data.joindate_yy + 1900, data.joindate_mm, data.joindate_dd)).;
+                                player.clbpop = teamList[data.club].pop;
+                                player.mon = (curDate.Year - (data.joindate_yy + 1900)) * 12 + (curDate.Month - data.joindate_mm);
                             }
                             catch { }
+                            
                             player.buy = data.interested;
                             switch (data.status)
                             {
@@ -410,6 +416,37 @@ namespace cm
                             
                             player.DDM = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
                             player.FC = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
+
+                            //determine if player is for sell
+                            if (player.TRF == "REQ" || player.TRF == "CLU")
+                                player.avail = "yes";
+                            else if (player.TRF == "UNK")
+                            {
+                                //player is for sale if player price higher than club balance
+                                if (player.price >= teamList[data.club].balance)
+                                    player.avail = "yes";
+                                //otherwise player that play is less than 85 will be on sale based on 
+                                //player potential , club popularity and club reputation
+                                //player need to join club longer than 16 month (still need to observe)
+                                //player need to be less than 190 potential
+                                else if (player.play < 85 && player.mon >= 16 && player.pot<190 && teamList[data.club].name.Contains("Blackburn"))
+                                {
+                                    //for player with potential  150
+                                    //pop 20 pot<195
+                                    //pop 19 pot<190
+                                    //pop 18 pot<185
+
+                                    int clubreputation_varian =(int)(teamList[data.club].rep / 2) + 120;    //(150/2)+120 = 195     
+                                    int clubpopularity_varian = (20 - teamList[data.club].pop) * 5;         //20-18 * 5 = 10
+                                    int req = clubreputation_varian - clubpopularity_varian;
+                                    
+                                    if (player.pot < req)
+                                        player.avail = "yes";
+                                    
+                                }
+
+                            }
+
                         }
                         playerList.Add(player);
                     }

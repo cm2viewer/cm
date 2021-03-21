@@ -184,6 +184,11 @@ namespace cm
 
         public int age { get; set; }
         public string cn { get; set; }
+        
+        public int days { get; set; }   //number of days since join date
+        public int mon { get; set; }
+        public string avail { get; set; }   //available for sell
+
         public string pos { get; set; }
         public string alt { get; set; }
         public ushort abi { get; set; }
@@ -258,7 +263,8 @@ namespace cm
         public byte phy { get; set; }
         public double recovery { get; set; }
         //public int ID { get; set; }
-
+        public DateTime join { get; set; }
+        public int clbpop { get; set; } //club popularity, determine the price threshold for player available for sale
     }
 
 }
