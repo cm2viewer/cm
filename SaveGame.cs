@@ -429,7 +429,7 @@ namespace cm
                                 //player potential , club popularity and club reputation
                                 //player need to join club longer than 16 month (still need to observe)
                                 //player need to be less than 190 potential
-                                else if (player.play < 85 && player.mon >= 16 && player.pot<190 && teamList[data.club].name.Contains("Blackburn"))
+                                else if (player.play < 85 && player.mon >= 16 && player.pot<190)
                                 {
                                     //for player with potential  150
                                     //pop 20 pot<195
