@@ -60,6 +60,11 @@ namespace cm
             SetValue(d, label39, textBox39, "Goal");
             SetValue(d, label40, textBox40, "Asst");
             SetValue(d, label43, textBox42, "Injury");
+            SetValue(d, label48, textBox48, "Abi");
+            SetValue(d, label47, textBox47, "Pot");
+            SetValue(d, label46, textBox46, "Rep");
+            SetValue(d, label45, textBox45, "Tal");
+            SetValue(d, label44, textBox44, "Play");
             label41.Text= "Goal/App";
             double ratio = ((double)(int)d.Cells["Goal"].Value) / (int)d.Cells["Apps"].Value;
             textBox41.Text = ratio.ToString("N2");
@@ -68,13 +73,13 @@ namespace cm
             if (int.Parse(d.Cells["Buy"].Value.ToString()) > 0)
             {
                 string name = d.Cells["Name"].Value.ToString();
-                List<Team> teamList = SaveGame.ReadTeamData(false, true);
+                //List<Team> teamList = SaveGame.ReadTeamData(false, true);
                 string interestedClub = "";
-                for (int i = 0; i < teamList.Count; i++)
+                for (int i = 0; i < SaveGame.teamList.Count; i++)
                 {
-                    if (teamList[i].shortlist != null && teamList[i].shortlist.Contains("," + name))
+                    if (SaveGame.teamList[i].shortlist != null && SaveGame.teamList[i].shortlist.Contains("," + name))
                     {
-                        interestedClub += teamList[i].name + " - " + teamList[i].division + ", ";
+                        interestedClub += SaveGame.teamList[i].name + " - " + SaveGame.teamList[i].division + ", ";
                     }
                 }
                 tbInterested.Text = interestedClub;
@@ -101,6 +106,9 @@ namespace cm
                     break;
                 case "System.Int16":
                 case "System.UInt16":
+                    tb.TextAlign = HorizontalAlignment.Right;
+                    tb.Text = d.Cells[s].Value.ToString();
+                    break;
                 case "System.Int32":
                 case "System.UInt32":
                     tb.TextAlign = HorizontalAlignment.Right;

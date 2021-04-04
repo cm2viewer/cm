@@ -23,7 +23,12 @@ namespace cm
         public string SaveName;
         public bool Available;
         public DateTime SaveDateTime;
-
+        public static List<Team> teamNameList;
+        public static List<Competition> competitionNameList;
+        public static List<Competition> competitionList;
+        public static List<Player> playerList;
+        public static List<Team> teamList;
+        public static List<Manager> managerList;
         public static void SelectSaveGame(int i)
         {
             SaveGame.SelectedSaveGame = i;
@@ -35,8 +40,19 @@ namespace cm
             SaveGame.TeamFileName = SaveGame.path + "TMDATA" + SaveGame.SelectedSaveGame + ".S16";
             SaveGame.ManagerFileName = SaveGame.path + "MGDATA" + SaveGame.SelectedSaveGame + ".S16";
             SaveGame.CompetitionFileName = SaveGame.path + "CPDATA" + SaveGame.SelectedSaveGame + ".S16";
+
+            competitionNameList = ReadCompetitionData(true);
+            teamNameList = ReadTeamData(false, false);
+            managerList = ReadManagerData();
+            competitionList = ReadCompetitionData(false);
+            playerList = ReadPlayersData(false);
+            teamList = ReadTeamData(false, true);
         }
 
+        public static int MyClubID()
+        {
+            return managerList[managerList.Count - 1].clubID;
+        }
         public static List<SaveGame> ReadSaveGameList()
         {
             List<SaveGame> SaveGameList = new List<SaveGame>();
@@ -62,7 +78,7 @@ namespace cm
 
         public static List<Manager> ReadManagerData()
         {
-            List<Team> teamNameList = ReadTeamData(true,false);
+            //List<Team> teamNameList = ReadTeamData(true,false);
             List<Manager> managerList = new List<Manager>();
             using (FileStream fs = new FileStream(ManagerFileName, FileMode.Open, FileAccess.Read))
             {
@@ -93,9 +109,9 @@ namespace cm
             return managerList;
         }
 
-        public unsafe static List<Competition> ReadCompetitionData(bool ReadNameOnly)
+        private unsafe static List<Competition> ReadCompetitionData(bool ReadNameOnly)
         {
-            List<Team> teamNameList = ReadTeamData(true, false);
+            //List<Team> teamNameList = ReadTeamData(true, false);
             List<Competition> competitionList = new List<Competition>();
             using (FileStream fs = new FileStream(CompetitionFileName, FileMode.Open, FileAccess.Read))
             {
@@ -131,21 +147,25 @@ namespace cm
             return competitionList;
         }
 
-        public unsafe static List<Team> ReadTeamData(bool ReadTeamNameOnly, bool ReadPlayerName)
+        private unsafe static List<Team> ReadTeamData(bool ReadTeamNameOnly, bool ReadPlayerName, string sourcedir = "")
         {
             List<Team> teamList = new List<Team>();
-            List<Team> teamNameList = new List<Team>();
-            List<Player> playerNameList = new List<Player>();
-            List<Competition> competitionList = new List<Competition>();
+            //List<Team> teamNameList = new List<Team>();
+            //List<Player> playerNameList = new List<Player>();
+            //List<Competition> competitionList = new List<Competition>();
             if (ReadTeamNameOnly == false)
             {
-                teamNameList = ReadTeamData(true, false);
+                teamNameList = ReadTeamData(true, false, sourcedir);
                 competitionList = ReadCompetitionData(true);
             }
-            if (ReadPlayerName)
-                playerNameList = ReadPlayersData(ReadNameOnly: true);
+            //if (ReadPlayerName)
+            //    playerNameList = ReadPlayersData(ReadNameOnly: true, sourcedir);
 
 
+            if (sourcedir == "")
+                SaveGame.TeamFileName = SaveGame.path + "TMDATA" + SaveGame.SelectedSaveGame + ".S16";
+            else
+                SaveGame.TeamFileName = SaveGame.path + "tmp\\TMDATA" + SaveGame.SelectedSaveGame + ".S16";
             using (FileStream fs = new FileStream(TeamFileName, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
@@ -182,29 +202,22 @@ namespace cm
                         }
                         if (ReadPlayerName)
                         { 
-                            for (int j = 0; j < t.numofplayers; j++)
+                            for (int i = 0; i < t.numofplayers; i++)
                             {
-                                if (t.squad[j] < playerNameList.Count && t.squad[j] > 1)
-                                {
-                                    team.squad = team.squad + "," + playerNameList[t.squad[j]].Name;
-                                }
+                                if (t.squad[i] < playerList.Count && t.squad[i] > 1)
+                                    team.squad = team.squad + "," + playerList[t.squad[i]].Name;
                             }
-                            if (t.shortlist0 < playerNameList.Count && t.shortlist0 > 1) team.shortlist += "," + playerNameList[t.shortlist0].Name;
-                            if (t.shortlist1 < playerNameList.Count && t.shortlist1 > 1) team.shortlist += "," + playerNameList[t.shortlist1].Name;
-                            if (t.shortlist2 < playerNameList.Count && t.shortlist2 > 1) team.shortlist += "," + playerNameList[t.shortlist2].Name;
-                            if (t.shortlist3 < playerNameList.Count && t.shortlist3 > 1) team.shortlist += "," + playerNameList[t.shortlist3].Name;
-                            if (t.shortlist4 < playerNameList.Count && t.shortlist4 > 1) team.shortlist += "," + playerNameList[t.shortlist4].Name;
-                            if (t.shortlist5 < playerNameList.Count && t.shortlist5 > 1) team.shortlist += "," + playerNameList[t.shortlist5].Name;
-                            if (t.shortlist6 < playerNameList.Count && t.shortlist6 > 1) team.shortlist += "," + playerNameList[t.shortlist6].Name;
-                            if (t.shortlist7 < playerNameList.Count && t.shortlist7 > 1) team.shortlist += "," + playerNameList[t.shortlist7].Name;
-                            if (t.shortlist8 < playerNameList.Count && t.shortlist8 > 1) team.shortlist += "," + playerNameList[t.shortlist8].Name;
-                            if (t.shortlist9 < playerNameList.Count && t.shortlist9 > 1) team.shortlist += "," + playerNameList[t.shortlist9].Name;
-                            if (t.shortlist10 < playerNameList.Count && t.shortlist10 > 1) team.shortlist += "," + playerNameList[t.shortlist10].Name;
-                            if (t.shortlist11 < playerNameList.Count && t.shortlist11 > 1) team.shortlist += "," + playerNameList[t.shortlist11].Name;
-                            if (t.shortlist12 < playerNameList.Count && t.shortlist12 > 1) team.shortlist += "," + playerNameList[t.shortlist12].Name;
-                            if (t.shortlist13 < playerNameList.Count && t.shortlist13 > 1) team.shortlist += "," + playerNameList[t.shortlist13].Name;
-                            if (t.shortlist14 < playerNameList.Count && t.shortlist14 > 1) team.shortlist += "," + playerNameList[t.shortlist14].Name;
-                            if (t.shortlist15 < playerNameList.Count && t.shortlist15 > 1) team.shortlist += "," + playerNameList[t.shortlist15].Name;
+                            if (team.squad != null) team.squad = System.Text.RegularExpressions.Regex.Replace(team.squad, "^,", "");
+                            for (int i = 0; i < 40; i+=5)
+                            {
+                                //if (System.Diagnostics.Debugger.IsAttached && team.name.Equals("Sunderland"))
+                                //    System.Diagnostics.Debugger.Break();
+                                int player_id = (t.shortlist[i] | t.shortlist[i + 1]<<8);
+                                if (player_id < playerList.Count && player_id > 1)
+                                    team.shortlist += "," + playerList[player_id].Name;
+
+                            }
+                            if (team.shortlist != null) team.shortlist = System.Text.RegularExpressions.Regex.Replace(team.shortlist,"^,","");
                             
                         }
                         teamList.Add(team);
@@ -215,9 +228,13 @@ namespace cm
         }
 
         
-        public static DateTime ReadCurDate(int i)
+        public static DateTime ReadCurDate(int i, string sourcedir = "")
         {
-            string filename = path + "GNDATA" + i + ".S16";
+            string filename;
+            if (sourcedir == "")
+                filename= SaveGame.path + "GNDATA" + i + ".S16";
+            else
+                filename = SaveGame.BackupPath + "tmp\\GNDATA" + i + ".S16";
             if (File.Exists(filename))
             {
                 using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
@@ -235,27 +252,32 @@ namespace cm
             }
             return DateTime.FromOADate(0);
         }
-        
 
 
-        public unsafe static List<Player> ReadPlayersData(bool ReadNameOnly) 
+
+        public unsafe static List<Player> ReadPlayersData(bool ReadNameOnly, string sourcedir = "") 
         {
-            List<Team> teamList = ReadTeamData(false,false);
-            DateTime curDate = ReadCurDate(SelectedSaveGame);
+            //List<Team> teamList = ReadTeamData(false,false, sourcedir);
+            DateTime curDate = ReadCurDate(SelectedSaveGame,sourcedir);
 
             List<Player> playerList = new List<Player>();
+            if (sourcedir == "")
+                SaveGame.PlayerFileName = SaveGame.path + "PLDATA" + SaveGame.SelectedSaveGame + ".S16";
+            else
+                SaveGame.PlayerFileName = SaveGame.BackupPath + "tmp\\PLDATA" + SaveGame.SelectedSaveGame + ".S16";
             using (FileStream fs = new FileStream(PlayerFileName, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
                     int totalRecords = reader.ReadUInt16();
-                    byte[] array = new byte[360];
                     for (int i=0;i<totalRecords;i++)
                     {
                         Player player = new Player();
                         player.Name = reader.ReadName();
-                        //player.ID = i;
+                        player.ID1 = i;
                         Data data = reader.ReadStruct<Data>(360);
+                        //player.data = data;
+                        
                         if (!ReadNameOnly)
                         {
                             //5D DD CF 00 F5 5C CE 00 FE 02 00 00 00 03 00 5A 02 FF FF 64 1C 01 4E 02 00 00 88 00 98 00 85 00 83 00 8C
@@ -308,8 +330,7 @@ namespace cm
                             player.rep = data.rep;
                             player.tal = data.talent;
                             player.caps = data.caps;
-                            player.teamval = (int)teamList[data.club].val;
-                            player.CLBREP = teamList[data.club].rep;
+                            player.crep = teamNameList[data.club].rep;
                             player.play = data.play;
                             player.price = (int)Math.Round(data.price);
                             player.wage = (int)data.wage;
@@ -324,62 +345,28 @@ namespace cm
                             player.injury = data.injury_length;
                             player.phy = data.physicalcondition;
                             player.recovery = (double)data.recovery_percentage/100;
-                            player.cn = teamList[data.cn].name;
-                            player.fgn = (teamList[data.cn].EEC == 0 ? "yes" : "no");
-                            player.club = teamList[data.club].name;
-                            player.club_cn = teamList[data.club].cn;
-                            player.div = teamList[data.club].division;
+                            player.cn = teamNameList[data.cn].name;
+                            player.fgn = (teamNameList[data.cn].EEC == 0 ? "yes" : "no");
+                            player.club = teamNameList[data.club].name;
+                            player.club_cn = teamNameList[data.club].cn;
+                            player.div = teamNameList[data.club].division;
                             try
                             {
                                 player.age = new DateTime(curDate.Subtract(new DateTime(data.yy + 1900, data.mm, Math.Max(1,(int)data.dd))).Ticks).Year - 1;
                                 player.join = new DateTime(data.joindate_yy + 1900, data.joindate_mm, Math.Max(1,(int)data.joindate_dd));
                                 player.days = curDate.Subtract(new DateTime(data.joindate_yy + 1900, data.joindate_mm, Math.Max(1, (int)data.joindate_dd))).Days;
                                 //player.months= curDate.Subtract(new DateTime(data.joindate_yy + 1900, data.joindate_mm, data.joindate_dd)).;
-                                player.clbpop = teamList[data.club].pop;
+                                player.cpop = teamNameList[data.club].pop;
                                 player.mon = (curDate.Year - (data.joindate_yy + 1900)) * 12 + (curDate.Month - data.joindate_mm);
                             }
                             catch { }
                             
                             player.buy = data.interested;
-                            switch (data.status)
-                            {
-                                case 0:
-                                    player.TRF = "UNK";
-                                    player.sell = ((teamList[data.club].val >= 250000 && teamList[data.club].val <= 500000) ? "*" : "");
-                                    break;
-                                case 1:
-                                    player.TRF = "CLU";
-                                    player.sell = "*";
-                                    break;
-                                case 2:
-                                    player.TRF = "REQ";
-                                    player.sell = "*";
-                                    break;
-                                case 3:
-                                    player.TRF = "LOA";
-                                    player.sell = ((teamList[data.club].val >= 250000 && teamList[data.club].val <= 500000) ? "*" : "");
-                                    break;
-                                case 4:
-                                    player.TRF = "FRE";
-                                    player.sell = "*";
-                                    break;
-                                case 5:
-                                    player.TRF = "N/A";
-                                    break;
-                                default:
-                                    player.TRF = "ERR";
-                                    break;
-                            }
-                            /*
-                            byte[] array2 = BitConverter.GetBytes(data.skill1).
-                                Concat(BitConverter.GetBytes(data.skill2)).
-                                Concat(BitConverter.GetBytes(data.skill3))
-                                .ToArray();
-                                */
+                            player.TRF = Player.transferStatus[data.status];
+                            
                             byte* array2 = data.skill;
                             //player.playerskill = new byte[24];
                             //System.Runtime.InteropServices.Marshal.Copy((IntPtr)data.skill,player.playerskill,0,24);
-                            
                             player.Agg = array2[0];
                             player.Big = array2[1];     //big
                             player.Chr = array2[2];     //character
@@ -404,55 +391,110 @@ namespace cm
                             player.Str = array2[21];
                             player.Tac = array2[22];
                             player.Tec = array2[23];
-                            //sum all skill
-                            //player.skill = array2.Sum(x => x);
+                            //sum all skill                            
                             for (int x = 0; x < 24; x++)
                                 player.skill += data.skill[x];
-                            //big and con worth 2x value, subtract morale and character
-                            player.skill += (player.Big + player.Con - player.Mor - player.Chr);
+                            // subtract morale
+                            player.skill -= player.Mor;
                             //fix injury prones and dirtiness 1-good 20-bad
                             player.skill += (int)((20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir));                            
-                            player.avg = (double)player.skill/24;
+                            player.avg = (double)player.skill/23;
                             
                             player.DDM = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
                             player.FC = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
+                            player.DEF = (double)(player.Tac + player.Posi + player.Hea + player.Det) / 4;
 
                             //determine if player is for sell
                             if (player.TRF == "REQ" || player.TRF == "CLU")
                                 player.avail = "yes";
-                            else if (player.TRF == "UNK")
+                            else if (player.TRF != "N/A")
                             {
-                                //player is for sale if player price higher than club balance
-                                if (player.price >= teamList[data.club].balance)
+                                if (player.price >= teamNameList[data.club].balance)
                                     player.avail = "yes";
                                 //otherwise player that play is less than 85 will be on sale based on 
                                 //player potential , club popularity and club reputation
                                 //player need to join club longer than 16 month (still need to observe)
                                 //player need to be less than 190 potential
-                                else if (player.play < 85 && player.mon >= 16 && player.pot<190)
+                                else if (player.play < 85 &&  player.pot<190)
                                 {
                                     //for player with potential  150
                                     //pop 20 pot<195
                                     //pop 19 pot<190
                                     //pop 18 pot<185
-
-                                    int clubreputation_varian =(int)(teamList[data.club].rep / 2) + 120;    //(150/2)+120 = 195     
-                                    int clubpopularity_varian = (20 - teamList[data.club].pop) * 5;         //20-18 * 5 = 10
+    
+                                    int clubreputation_varian =(int)(teamNameList[data.club].rep / 2) + 120;    //(150/2)+120 = 195     
+                                    int clubpopularity_varian = (20 - teamNameList[data.club].pop) * 5;         //20-18 * 5 = 10
                                     int req = clubreputation_varian - clubpopularity_varian;
                                     
                                     if (player.pot < req)
-                                        player.avail = "yes";
-                                    
+                                    {
+                                        if (player.mon > 16)
+                                            player.avail = "yes";
+                                        else if (player.mon > 11)
+                                            player.avail = "maybe";
+                                    }
                                 }
 
+                                if (player.avail == null)
+                                {
+                                    //birmingham money 1060 player price 1057 and player available for sale, player is interested by arsenal and chelsea
+                                    //player is for sale if player price higher than club balance
+                                    //tested until team balance below 2M, still available
+                                    if (player.buy > 0 && player.price > teamNameList[data.club].balance / 2)
+                                        player.avail = "maybe";                                   
+                                }
+                            }
+                            //check for bcr
+                            if (player.bcr.Equals("yes") && player.avail == null)
+                            {
+                                int myclub = managerList[managerList.Count - 1].clubID;
+                                if (player.cpop < teamNameList[myclub].pop && player.crep < teamNameList[myclub].rep - 35)
+                                    player.avail = "bcr";
                             }
 
+                            //determine player join chance
+                            if (SaveGame.MyClubID() <= teamNameList.Count)
+                            {
+                                Team MyTeam = teamNameList[SaveGame.MyClubID()];
+                                int clubreputation_varian = MyTeam.rep - player.crep;
+                                int clubpopularity_varian = (MyTeam.pop - player.cpop) * 5;
+                                int varian = clubreputation_varian + clubpopularity_varian;
+                                if (player.TRF == "REQ" || player.TRF == "CLU" || player.TRF == "LOA")
+                                    varian += 50;
+                                if (varian >= 100)
+                                    player.chance = "100%";                                
+                                else if (varian>0)
+                                    player.chance = varian + "%";
+                                else if (varian >= -10)
+                                    player.chance = "1%";
+                            }
                         }
                         playerList.Add(player);
                     }
                 }
             }
             return playerList;
+        }
+        
+
+        public static void SavePlayerData(List<Player> playersList)
+        {
+            using (FileStream fs = new FileStream(PlayerFileName, FileMode.CreateNew, FileAccess.Write))
+            {
+                using (BinaryWriter writer = new BinaryWriter(fs))
+                {
+                    foreach (Player player in playersList)
+                    {
+                        Data data = new Data();//= player.data;
+                        data.ability = player.abi;
+                        data.potential = player.pot;
+                        data.rep = player.rep;
+                        data.talent = player.tal;
+                        writer.Write(player.Name);
+                        writer.Write(data.getBytes());
+                    }
+                }
+            }
         }
     }
 }

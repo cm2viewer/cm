@@ -180,15 +180,17 @@ namespace cm
             "Influence","Injury Prone","Adaptibility",
             "Off the ball","Pace","Passing","Positioning","Set Pieces","Shooting",
             "Stamina","Strength","Tackling","Technique" };
+
+        public static string[] transferStatus = { "UNK", "CLU", "REQ", "LOA", "FRE", "N/A" };
         public string Name { get; set; }
 
         public int age { get; set; }
         public string cn { get; set; }
         
-        public int days { get; set; }   //number of days since join date
-        public int mon { get; set; }
-        public string avail { get; set; }   //available for sell
 
+        public int mon { get; set; }            //number of days since join date //reset on new contract
+        public string avail { get; set; }       //available for sell
+        public string chance { get; set; }         //join chance
         public string pos { get; set; }
         public string alt { get; set; }
         public ushort abi { get; set; }
@@ -200,28 +202,34 @@ namespace cm
         //public byte[] playerskill { get; set; }
         public int skill { get; set; }
         public double avg { get; set; }
-        public byte Big { get; set; }
-        public byte Con { get; set; }
-        public byte Agg { get; set; }
-
-
-        public byte Chr { get; set; }
+        public double DEF { get; set; }         //defense average skill
         public string TRF { get; set; }
-        public byte CLBREP { get; set; }
-
         public int buy { get; set; }
         public int price { get; set; }
         public double rating { get; set; }
-        public string bcr { get; set; }
         public string club { get; set; }
+
+        public string bcr { get; set; }
+        public byte crep { get; set; }
+        public int cpop { get; set; } //club popularity, determine the price threshold for player available for sale
+
         public int DDM { get; set; }
         public int FC { get; set; }
         public string club_cn { get; set; }
         public string div { get; set; }
         public int wage { get; set; }
-
+        public DateTime join { get; set; }
+        public int days { get; set; }   //number of days since join date
         public string fgn { get; set; }
         public ushort caps { get; set; }
+        public int apps { get; set; }
+        public int goal { get; set; }
+        public int asst { get; set; }
+
+        public byte Big { get; set; }
+        public byte Con { get; set; }
+        public byte Agg { get; set; }
+        public byte Chr { get; set; }
 
         public byte Adap { get; set; }
         public byte Cre { get; set; }
@@ -243,9 +251,7 @@ namespace cm
         public byte Tac { get; set; }
         public byte Tec { get; set; }
 
-        public int apps { get; set; }    
-        public int goal { get; set; }
-        public int asst { get; set; }
+
         public byte GK { get; set; }
         public byte SW { get; set; }
         public byte D { get; set; }
@@ -256,15 +262,14 @@ namespace cm
         public byte L { get; set; }
         public byte C { get; set; }
         public byte R { get; set; }
-
-        public int teamval { get; set; }
-        public string sell { get; set; }
         public int injury { get; set; }
         public byte phy { get; set; }
         public double recovery { get; set; }
-        //public int ID { get; set; }
-        public DateTime join { get; set; }
-        public int clbpop { get; set; } //club popularity, determine the price threshold for player available for sale
+        public int ID1 { get; set; }
+
+
+        //public Data data { get; set; }
+
     }
 
 }

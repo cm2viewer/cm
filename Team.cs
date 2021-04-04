@@ -8,7 +8,7 @@ namespace cm
 {
 
     [StructLayout(LayoutKind.Explicit)]
-    internal struct TeamData
+    internal unsafe struct TeamData
     {
         [FieldOffset(28)]
         public ushort cn;
@@ -46,39 +46,9 @@ namespace cm
         [FieldOffset(288)]
         public ushort numofplayers;
         [FieldOffset(290)]
-        public byte reputation;   //club current reputation, determine 'big club release' contract, etc
-        [FieldOffset(377)]
-        public ushort shortlist0;
-        [FieldOffset(382)]
-        public ushort shortlist1;
-        [FieldOffset(387)]
-        public ushort shortlist2;
-        [FieldOffset(392)]
-        public ushort shortlist3;
-        [FieldOffset(397)]
-        public ushort shortlist4;
-        [FieldOffset(402)]
-        public ushort shortlist5;
-        [FieldOffset(407)]
-        public ushort shortlist6;
-        [FieldOffset(412)]
-        public ushort shortlist7;
-        [FieldOffset(417)]
-        public ushort shortlist8;
-        [FieldOffset(422)]
-        public ushort shortlist9;
-        [FieldOffset(427)]
-        public ushort shortlist10;
-        [FieldOffset(432)]
-        public ushort shortlist11;
-        [FieldOffset(437)]
-        public ushort shortlist12;
-        [FieldOffset(442)]
-        public ushort shortlist13;
-        [FieldOffset(447)]
-        public ushort shortlist14;
-        [FieldOffset(452)]
-        public ushort shortlist15;
+        public byte reputation;     //club current reputation, determine 'big club release' contract, etc'
+        [FieldOffset(377)]          //377-457
+        public unsafe fixed byte shortlist[80];    //byte 1 & 2 (player id) byte3,4,5 unknown, assume max 16 shortlist
 
         [FieldOffset(467)]
         public double season_ticket;
@@ -129,7 +99,6 @@ namespace cm
         public byte rep { get; set; }
         public ushort cap { get; set; }
         public ushort seat { get; set; }
-        public int val { get; set; }
         public int balance { get; set; }
         public int player_sales { get; set; }
         public string shortlist { get; set; }

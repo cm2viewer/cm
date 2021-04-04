@@ -10,11 +10,13 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO.Compression;    //require .NET 4.5
 using System.Net;
+using System.Threading.Tasks;
 
 namespace cm
 {
     public partial class FormMain : Form
     {
+
         public FormMain()
         {
             InitializeComponent();            
@@ -24,7 +26,9 @@ namespace cm
         {
             SaveGame game = SaveGame.ReadSaveGameList().First(s => s.index == SaveGame.SelectedSaveGame);
             this.Text = "CM2 Viewer - " + game.SaveName + " (" + game.SaveDateTime.ToLongDateString() +")";
-            Bind(SaveGame.ReadPlayersData(ReadNameOnly: false));
+            //Bind(SaveGame.ReadPlayersData(ReadNameOnly: false));
+            Bind(SaveGame.playerList);
+            dv.Sort = "POT DESC";
             PopulateRestore(); 
             for (int i=0;i<Player.skillName.Length;i++)
             {
@@ -43,7 +47,7 @@ namespace cm
                     TextAlign = HorizontalAlignment.Center
                     
                 };
-                nud.ValueChanged += (s, ex) => filter();
+                nud.ValueChanged += (s, ex) => filter();     
                 splitContainer1.Panel2.Controls.Add(lbl);
                 splitContainer1.Panel2.Controls.Add(nud);
             }
@@ -86,11 +90,17 @@ namespace cm
             button14.Enabled = (dt.TableName == "Player");
             button13.Enabled = (dt.TableName == "Player");
             button16.Enabled = (dt.TableName == "Player");
+            sqlDatagridview1.ReadOnly = (dt.TableName != "Player");
         }
 
         public void Bind<T>(List<T> list)
         {
-            dt = BuildDataTable(list);
+            dt = Helper.BuildDataTable(list);
+            BindDataTable(dt);
+        }
+
+        public void BindDataTable(DataTable dt)
+        { 
             dv = dt.DefaultView;
             BindingSource bindingSource = new BindingSource();
             bindingSource.DataSource = dt;
@@ -100,34 +110,7 @@ namespace cm
         }
        
 
-        public static DataTable BuildDataTable<T>(IList<T> lst)
-        {
-            DataTable dataTable = CreateTable<T>();
-            Type typeFromHandle = typeof(T);
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeFromHandle);
-            foreach (T item in lst)
-            {
-                DataRow dataRow = dataTable.NewRow();
-                foreach (PropertyDescriptor item2 in properties)
-                {
-                    dataRow[item2.Name] = item2.GetValue(item);
-                }
-                dataTable.Rows.Add(dataRow);
-            }
-            return dataTable;
-        }
 
-        private static DataTable CreateTable<T>()
-        {
-            Type typeFromHandle = typeof(T);
-            DataTable dataTable = new DataTable(typeFromHandle.Name);
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeFromHandle);
-            foreach (PropertyDescriptor item in properties)
-            {
-                dataTable.Columns.Add(item.Name, item.PropertyType);
-            }
-            return dataTable;
-        }
 
         private void filter()
         {
@@ -154,6 +137,8 @@ namespace cm
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND SKILL>=([0-9]+) ", " ");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND TRF([<=>]+'[A-Z/]+') ", " ");
                 textBox1.Text = Regex.Replace(textBox1.Text, " AND (\\(TRF.+ OR .+\\)) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND AVAIL IN ((\\S+)) ", " ");
+                textBox1.Text = Regex.Replace(textBox1.Text, " AND CHANCE IS NOT NULL ", " ");
 
                 //the end result is custom filter entered by user
                 //string customFilter = textBox1.Text.Trim();
@@ -187,11 +172,15 @@ namespace cm
                 if (cbStatus.SelectedItem != null)
                 {
                     if (cbStatus.SelectedItem.ToString() == "LIST")
-                        textBox1.Text += " AND (TRF='CLU' OR TRF='REQ')";
+                        textBox1.Text += " AND (TRF='CLU' OR TRF='REQ' OR TRF='LOA')";
                     else if (cbStatus.SelectedItem.ToString() == "<>N/A")
                         textBox1.Text += " AND TRF<>'N/A'";
                     else if (cbStatus.SelectedItem.ToString() == "CHEAP")
                         textBox1.Text += " AND (TRF='FRE' OR PRICE<100000)";
+                    else if (cbStatus.SelectedItem.ToString() == "AVAILABLE")
+                        textBox1.Text += " AND AVAIL IN ('yes','maybe','bcr')";
+                    else if (cbStatus.SelectedItem.ToString() == "CHANCE")
+                        textBox1.Text += " AND AVAIL IN ('yes','maybe','bcr') AND CHANCE IS NOT NULL";
                     else if (cbStatus.SelectedItem.ToString() != "")
                         textBox1.Text += " AND TRF='" + cbStatus.SelectedItem.ToString() + "'";
                 }
@@ -241,19 +230,19 @@ namespace cm
 
         private void button1_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=15 AND POSI>=15 AND HEA>=10 AND STA>=10";
+            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=15 AND POSI>=15 AND HEA>=10";
             filter();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=12 AND POSI>=12 AND HEA>=10 AND STA>=10";
+            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=12 AND POSI>=12 AND HEA>=10";
             filter();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=5 AND TAC>=10 AND POSI>=10 AND HEA>=8 AND STA>=8";
+            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=5 AND TAC>=10 AND POSI>=10 AND HEA>=8";
             filter();
         }
 
@@ -287,19 +276,19 @@ namespace cm
 
         private void button2_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=15 AND SHO>=15 AND HEA>=10 AND STA>=10";
+            textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=15 AND SHO>=15 AND HEA>=10";
             filter();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=10 AND OFF>=12 AND SHO>=12 AND HEA>=5 AND STA>=10";
+            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=10 AND OFF>=12 AND SHO>=12 AND HEA>=5";
             filter();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=5 AND OFF>=10 AND SHO>=10 AND HEA>=5 AND STA>=8";
+            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=5 AND OFF>=10 AND SHO>=10 AND HEA>=5";
             filter();
         }
 
@@ -319,16 +308,75 @@ namespace cm
                     if (sqlDatagridview1.CurrentCell.OwningColumn.Name.Equals("buy"))
                     {
                         string name = sqlDatagridview1.CurrentRow.Cells["Name"].Value.ToString();
-                        List<Team> teamList = SaveGame.ReadTeamData(false, true);
+                        //List<Team> teamList = SaveGame.ReadTeamData(false, true);
                         string interestedClub = "";
-                        for (int i=0;i<teamList.Count;i++)
+                        for (int i = 0; i < SaveGame.teamList.Count; i++)
                         {
-                            if (teamList[i].shortlist!=null && teamList[i].shortlist.Contains(","+name))
+                            if (SaveGame.teamList[i].shortlist != null && SaveGame.teamList[i].shortlist.Contains(name))
                             {
-                                interestedClub += teamList[i].name + " - " + teamList[i].division + "\n";
+                                interestedClub += SaveGame.teamList[i].name + " - " + SaveGame.teamList[i].division + "\n";
                             }
                         }
                         MessageBox.Show(interestedClub, "Interested Club");
+                    }
+                    else if (sqlDatagridview1.CurrentCell.OwningColumn.Name.Equals("chance"))
+                    {
+                        string clubName = sqlDatagridview1.CurrentRow.Cells["club"].Value.ToString();
+                        int playerID = int.Parse(sqlDatagridview1.CurrentRow.Cells["ID1"].Value.ToString());
+                        Player p = SaveGame.playerList[playerID];
+                        Team PlayerTeam = SaveGame.teamList.Find(x => x.name.Equals(clubName));
+                        Team MyTeam = SaveGame.teamList[SaveGame.MyClubID()];
+                        string msg = p.Name + "\n\n" +
+                            "Player Rep: " + p.rep + "\nPlayer Pot: " + p.pot + "\n\n"+
+                            clubName + " Rep: " + PlayerTeam.rep + "\n" + clubName + " Pop: " + PlayerTeam.pop + "\n\n" +
+                            MyTeam.name + " Rep: " + MyTeam.rep + "\n" + MyTeam.name +" Pop: " + MyTeam.pop + "\n\n";
+                        //player will negotiate depends on:
+                        //1. player potential, reputation, player on transfer list or loan list
+                        //2. player's club reputation and popularity and league
+                        //3. My club reputation and popularity and league
+                        int clubreputation_varian = MyTeam.rep - PlayerTeam.rep;
+                        int clubpopularity_varian = (MyTeam.pop - PlayerTeam.pop) * 5;
+                        int varian = clubreputation_varian + clubpopularity_varian;
+                        msg += "Rep Varian: " + clubreputation_varian + "\nPop Varian: " + clubpopularity_varian + "\n\n";
+                        if (p.TRF.Equals("REQ") || p.TRF.Equals("LOA") || p.TRF.Equals("CLU"))
+                        {
+                            msg += "Player is Listed\n";
+                            varian += 50; //add chance of join when listed
+                        }
+                        msg += "Varian Assume: " + varian + "\n\n";
+                        if (varian < 0 )
+                            msg += "Join Chance: 0 %";
+                        else if (varian >= 100)
+                            msg += "Join Chance: 100 %";
+                        else if (varian >= 50)
+                            msg += "Join Chance: 90 %";
+                        else
+                            msg += "Join Chance: 50/50";
+                        MessageBox.Show(msg, "Join Chance Calculation");
+                    }
+                    else if (sqlDatagridview1.CurrentCell.OwningColumn.Name.Equals("club"))
+                    {
+                        string clubName = sqlDatagridview1.CurrentRow.Cells["club"].Value.ToString();
+                        string clubRep = sqlDatagridview1.CurrentRow.Cells["CRep"].Value.ToString();
+                        string clubPop = sqlDatagridview1.CurrentRow.Cells["CPop"].Value.ToString();
+                        Team team = SaveGame.teamList.Find(x => x.name.Equals(clubName));
+                        string shortlisted = clubName + " balance: " + team.balance.ToString("N0") +
+                            "\nClub Rep: " + clubRep + "  Club Pop: " + clubPop + "\n\n";
+
+                        int clubreputation_varian = (int)(int.Parse(clubRep) / 2) + 120;    //(150/2)+120 = 195     
+                        int clubpopularity_varian = (20 - int.Parse(clubPop)) * 5;         //20-18 * 5 = 10
+                        int req = clubreputation_varian - clubpopularity_varian;
+                        //169/2 + 120 84+120 = 204 - 15 = 194
+                        shortlisted += "Player Potential For sale < " + req + "\n\n";
+                        if (team.shortlist != null)
+                        {
+                            foreach (string playerName in team.shortlist.Split(','))
+                            {
+                                Player p = SaveGame.playerList.Find(x => x.Name.Equals(playerName));
+                                shortlisted += p.Name + " - " + p.club + " - " + p.price.ToString("N0") + "\n";
+                            }
+                        }
+                        MessageBox.Show(shortlisted, clubName + " shortlist");
                     }
                     else
                     {
@@ -356,17 +404,21 @@ namespace cm
             textBox1.Text = "GK=2 AND HEA>=10 AND POSI>=15 AND TAC>=15";
             filter();
         }
-
+        
         private void playerDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Bind(SaveGame.ReadPlayersData(ReadNameOnly: false));
+            //playerList = SaveGame.ReadPlayersData(ReadNameOnly: false);
+            SaveGame.SelectSaveGame(SaveGame.SelectedSaveGame);
+            Bind(SaveGame.playerList);
+            dv.Sort = "POT DESC";
             SaveGame game = SaveGame.ReadSaveGameList().First(s => s.index == SaveGame.SelectedSaveGame);
             this.Text = "CM2 Viewer - " + game.SaveName + " (" + game.SaveDateTime.ToLongDateString() + ")";
         }
 
         private void teamDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Bind(SaveGame.ReadTeamData(false,true));
+            //Bind(SaveGame.ReadTeamData(false,true));
+            Bind(SaveGame.teamList);
         }
 
         private void managerDBToolStripMenuItem_Click(object sender, EventArgs e)
@@ -375,7 +427,7 @@ namespace cm
         }
         private void competitionDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Bind(SaveGame.ReadCompetitionData(false));
+            Bind(SaveGame.competitionList);
         }
 
         private void searchNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -402,49 +454,110 @@ namespace cm
             
         }
 
-        private void backupToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void backupToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string notes = "";
             if (Helper.InputBox("Backup", "Enter Backup Notes", ref notes) != DialogResult.OK)
                 return;
-            string fileName = SaveGame.BackupPath +SaveGame.SelectedSaveGame + "S16." + SaveGame.ReadCurDate(SaveGame.SelectedSaveGame).ToString("yyMMdd") + notes + ".zip";
 
-            if (File.Exists(fileName)) File.Delete(fileName);
-            using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Create))
+            /*
+            foreach (var file in Directory.GetFiles(SaveGame.path, "??????" + SaveGame.SelectedSaveGame.ToString() + ".S16"))
             {
-                foreach (var file in Directory.GetFiles(SaveGame.path, "??????" + SaveGame.SelectedSaveGame.ToString() + ".S16"))
-                {
-                    zip.CreateEntryFromFile(file, Path.GetFileName(file), CompressionLevel.Optimal);
-                }
-            }
+                string destFileName = Path.Combine(SaveGame.BackupPath, Path.GetFileName(file));
+                File.Copy(file, destFileName,true);
+            }*/
+            string filename = await DoBackup(notes);
+            new System.Threading.Thread(() =>
+            {
+                //prevent msgbox from blocking ??? seems to minimize ui lag
+                Console.WriteLine("done backup 1");
+                MessageBox.Show("done backup to " + filename);
+            }).Start();
+            PopulateRestore();  
+        }
 
-            PopulateRestore();
-            MessageBox.Show("done backup to " + fileName);
+        private static async Task<string> DoBackup(string notes)
+        {
+            string fileName = "";
+            await Task.Run(() =>
+            {
+                fileName = SaveGame.BackupPath + SaveGame.SelectedSaveGame + "S16." + SaveGame.ReadCurDate(SaveGame.SelectedSaveGame).ToString("yyMMdd") + notes + ".zip";
+                if (File.Exists(fileName)) File.Delete(fileName);
+                using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Create))
+                {
+                    foreach (var file in Directory.GetFiles(SaveGame.path, "??????" + SaveGame.SelectedSaveGame.ToString() + ".S16"))
+                    {
+                        zip.CreateEntryFromFile(file, Path.GetFileName(file), CompressionLevel.Optimal);
+                    }
+                }
+                
+            });
+            return fileName;
         }
 
         private void PopulateRestore()
         {
-            restoreToolStripMenuItem.DropDownItems.Clear();
-            
-            IOrderedEnumerable<string> list1 = from d in Directory.GetDirectories(SaveGame.path)
-                                               select d.Split('\\').Last() into d
-                                                           where Regex.Match(d, "^[0-9]+").Success
-                                                           orderby d descending
-                                                           select d;
-                                                           
-            IOrderedEnumerable<string> list2 = from d in Directory.GetFiles(SaveGame.BackupPath, SaveGame.SelectedSaveGame + "S16.*.zip")
-                                                           select d.Split('\\').Last() into d
-                                                           orderby d descending
-                                                           select d;
-            foreach (string name in list2.Concat(list1))
-            {
-                ToolStripItem toolStripItem = restoreToolStripMenuItem.DropDownItems.Add(name);
-                toolStripItem.Click += delegate
-                {
-                    restore(name);
-                };
-            }
+            PopulateRestore(restoreToolStripMenuItem);
+            PopulateRestore(compareDBToolStripMenuItem);
+        }
 
+        private async void PopulateRestore(ToolStripMenuItem ts)
+        {
+            await Task.Run(() =>
+            {
+                ts.DropDownItems.Clear();
+                //compareDBToolStripMenuItem.DropDownItems.Clear();
+
+                IOrderedEnumerable<string> list1 = from d in Directory.GetDirectories(SaveGame.path)
+                                                   select d.Split('\\').Last() into d
+                                                   where Regex.Match(d, "^[0-9]+").Success
+                                                   orderby d descending
+                                                   select d;
+
+                IOrderedEnumerable<string> list2 = from d in Directory.GetFiles(SaveGame.BackupPath, SaveGame.SelectedSaveGame + "S16.*.zip")
+                                                   select d.Split('\\').Last() into d
+                                                   orderby d descending
+                                                   select d;
+                foreach (string name in list2.Concat(list1))
+                {
+                    Action addAction = delegate ()
+                    {
+                        ToolStripItem toolStripItem = ts.DropDownItems.Add(name);
+                        toolStripItem.Click += delegate {
+                            if (ts == restoreToolStripMenuItem)
+                                restore(name);
+                            else
+                                comparedb(name); 
+                        };                       
+                    };
+                    ts.GetCurrentParent().Invoke(addAction);
+                }
+            });
+        }
+
+        private void comparedb(string name)
+        {
+            if (name.EndsWith(".zip"))
+            {
+                if (!Directory.Exists(SaveGame.BackupPath + "tmp\\"))
+                    Directory.CreateDirectory(SaveGame.BackupPath + "tmp\\");
+                using (ZipArchive zip = ZipFile.OpenRead(SaveGame.BackupPath + name))
+                {
+                    foreach (var file in zip.Entries)
+                    {
+                        file.ExtractToFile(SaveGame.BackupPath + "tmp\\" + file.FullName, true);
+                    }
+                }
+            }
+            List<Player> playerList1 = SaveGame.ReadPlayersData(false);
+            DataTable dt1 = Helper.BuildDataTable(playerList1, "db",1);
+            List<Player> playerList2 = SaveGame.ReadPlayersData(false, SaveGame.BackupPath + "tmp\\");
+            DataTable dt2 = Helper.BuildDataTable(playerList2, "db", 2);
+            dt1.Merge(dt2);
+
+            BindDataTable(dt1);
+            sqlDatagridview1.Columns["db"].DisplayIndex = 0;
+            dv.Sort = "POT DESC, Name ASC";
         }
 
         private void restore(string name)
@@ -518,8 +631,8 @@ namespace cm
         private void btnMyShortlist_Click(object sender, EventArgs e)
         {
             List<Manager> managerlist = SaveGame.ReadManagerData();
-            List<Team> teamList = SaveGame.ReadTeamData(false,true);
-            Team myTeam = teamList[managerlist[managerlist.Count - 1].clubID];
+            //List<Team> teamList = SaveGame.ReadTeamData(false,true);
+            Team myTeam = SaveGame.teamList[managerlist[managerlist.Count - 1].clubID];
 
             String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
             string additionalShortlist = "";
@@ -593,5 +706,7 @@ namespace cm
                 Environment.Exit(0);
             }
         }
+
+       
     }
 }

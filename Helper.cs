@@ -1,5 +1,8 @@
 ﻿// WindowsFormsApp1.Helper
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -49,6 +52,34 @@ public static class Helper
         }
     }
 
+    public static T BytesToStruct<T>(this byte[] b) where T : struct
+    {
+        GCHandle gCHandle = default(GCHandle);
+        try
+        {
+            gCHandle = GCHandle.Alloc(b, GCHandleType.Pinned);
+            return (T)Marshal.PtrToStructure(gCHandle.AddrOfPinnedObject(), typeof(T));
+        }
+        finally
+        {
+            if (gCHandle.IsAllocated)
+            {
+                gCHandle.Free();
+            }
+        }
+    }
+    public static byte[] getBytes(this cm.Data d) 
+    {
+        int size = Marshal.SizeOf(d);
+        byte[] arr = new byte[size];
+
+        IntPtr ptr = Marshal.AllocHGlobal(size);
+        Marshal.StructureToPtr(d, ptr, true);
+        Marshal.Copy(ptr, arr, 0, size);
+        Marshal.FreeHGlobal(ptr);
+        return arr;
+    }
+
     public static string ReadName(this BinaryReader reader, bool haslastname = true)
     {
         string name;
@@ -60,6 +91,18 @@ public static class Helper
             name += " " + Encoding.UTF7.GetString(reader.ReadBytes(n));
         }
         return name.Trim();
+    }
+
+    public static void WriteName(this BinaryWriter writer, string name)
+    {
+        string[] names = name.Split(' ');
+        writer.Write((UInt16)names[0].Length);
+        writer.Write(names[0]);
+        if (names.Length >1)
+        {
+            writer.Write((UInt16)names[1].Length);
+            //writer.Write(names[]);
+        }
     }
 
     public static DialogResult InputBox(string title, string promptText, ref string value)
@@ -104,5 +147,37 @@ public static class Helper
         return result;
     }
 
-   
+    public static DataTable BuildDataTable<T>(IList<T> lst, string customcol = "", int defaultvalue = 0)
+    {
+        DataTable dataTable = CreateTable<T>(customcol,defaultvalue);
+        Type typeFromHandle = typeof(T);
+        PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeFromHandle);
+        foreach (T item in lst)
+        {
+            DataRow dataRow = dataTable.NewRow();
+            foreach (PropertyDescriptor item2 in properties)
+            {
+                dataRow[item2.Name] = item2.GetValue(item);
+            }
+            dataTable.Rows.Add(dataRow);
+        }
+        return dataTable;
+    }
+
+    private static DataTable CreateTable<T>(string customcol = "", int defaultvalue = 0)
+    {
+        Type typeFromHandle = typeof(T);
+        DataTable dataTable = new DataTable(typeFromHandle.Name);
+        PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeFromHandle);
+        if (!customcol.Equals(""))
+        {
+            DataColumn dc = dataTable.Columns.Add(customcol, typeof(Int32));
+            dc.DefaultValue = defaultvalue;
+        }
+        foreach (PropertyDescriptor item in properties)
+        {
+            dataTable.Columns.Add(item.Name, item.PropertyType);
+        }
+        return dataTable;
+    }
 }
