@@ -3,7 +3,7 @@
 Tool to view savegame for CM9798
 
 Goals:
-- Identify player with high potential that is available for sale and will join your team
+- Identify player with high potential and skills that is available for sale and will join your team
 
 Feature:
 - Filter and sort by potential, ability
