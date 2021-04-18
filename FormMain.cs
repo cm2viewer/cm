@@ -66,7 +66,14 @@ namespace cm
             int[] list = { 6,7,8, 9, 10, 11,12,13,14 };
             foreach (int i in list)
                 fontSizeToolStripMenuItem.DropDownItems.Add(new ToolStripMenuItem(i.ToString(),null, FontSizeDropDown_Click));
+            foreach (Control c in splitContainer1.Panel1.Controls)
+            {
+                if (c is Button) ((Button)c).Click += new EventHandler(btnClick);
+            }
         }
+
+  
+
         public void FontSizeDropDown_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
@@ -228,75 +235,134 @@ namespace cm
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=15 AND POSI>=15 AND HEA>=10";
-            filter();
-        }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void btnClick(object sender, EventArgs e)
         {
-            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=12 AND POSI>=12 AND HEA>=10";
-            filter();
-        }
+            Button b = (Button)sender;
+            switch (b.Text)
+            {
+                case "D/DM BEST":
+                    textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=15 AND POSI>=15 AND HEA>=10";
+                    filter();
+                    break;
+                case "D/DM GOOD":
+                    textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=10 AND TAC>=12 AND POSI>=12 AND HEA>=10";
+                    filter();
+                    break;
+                case "D/DM FAIR":
+                    textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=5 AND TAC>=10 AND POSI>=10 AND HEA>=8";
+                    filter();
+                    break;
+                case "MF BEST":
+                    //MRL CRE 15 DET 15 OFF 15 PASS 15 POSI 10 TAC 10 PAC 10
+                    //MC CRE 6 DET 15 OFF 15 POS 15 TAC 10 PAC 10 PASS 10
+                    //80x1.5 + 60 = max 180 50% 66% 75%
+                    textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>140";
+                    filter();
+                    break;
+                case "MF GOOD":
+                    textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>120";
+                    filter();
+                    break;
+                case "MF FAIR":
+                    textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>90";
+                    filter();
+                    break;
+                case "FC BEST":
+                    textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=15 AND SHO>=15 AND HEA>=10";
+                    filter();
+                    break;
+                case "FC GOOD":
+                    textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=10 AND OFF>=12 AND SHO>=12 AND HEA>=5";
+                    filter();
+                    break;
+                case "FC FAIR":
+                    textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=5 AND OFF>=10 AND SHO>=10 AND HEA>=5";
+                    filter();
+                    break;
+                case "GK BEST":
+                    textBox1.Text = "GK=2 AND DET>=10 AND HEA>=15 AND POSI>=18 AND TAC>=18";
+                    filter();
+                    break;
+                case "GK GOOD":
+                    textBox1.Text = "GK=2 AND DET>=10 AND HEA>=15 AND POSI>=15 AND TAC>=15";
+                    filter();
+                    break;
+                case "GK FAIR":
+                    textBox1.Text = "GK=2 AND HEA>=10 AND POSI>=15 AND TAC>=15";
+                    filter();
+                    break;
+                case "My Club":
+                    if (dt.TableName == "Team")
+                        textBox1.Text = "Name='" + SaveGame.managerList[SaveGame.managerList.Count - 1].club + "'";
+                    else
+                        textBox1.Text = "Club='" + SaveGame.managerList[SaveGame.managerList.Count - 1].club + "'";
+                    dv.RowFilter = textBox1.Text;
 
-        private void button7_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(SW=2 OR D=2 OR DM=2 OR M=2) AND DET>=5 AND TAC>=10 AND POSI>=10 AND HEA>=8";
-            filter();
-        }
+                    break;
+                case "My Country":
+                    if (dt.TableName == "Player")
+                        textBox1.Text = "CLUB_CN='" + SaveGame.managerList[SaveGame.managerList.Count - 1].cn + "'";
+                    else
+                        textBox1.Text = "CN='" + SaveGame.managerList[SaveGame.managerList.Count - 1].cn + "'";
+                    dv.RowFilter = textBox1.Text;
+                    break;
+                case "My Shortlist":
+                    Team myTeam = SaveGame.teamList[SaveGame.managerList[SaveGame.managerList.Count - 1].clubID];
 
-        private void button15_Click(object sender, EventArgs e)
-        {
-            //MRL CRE 15 DET 15 OFF 15 PASS 15 POSI 10 TAC 10 PAC 10
-            //MC CRE 6 DET 15 OFF 15 POS 15 TAC 10 PAC 10 PASS 10
-            //80x1.5 + 60 = max 180 50% 66% 75%
-            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>140";
-            filter();
-        }
+                    String filename = SaveGame.BackupPath + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
+                    string additionalShortlist = "";
+                    if (File.Exists(filename))
+                    {
+                        additionalShortlist = File.ReadAllText(filename).Replace("\r\n", ",");
+                    }
+                    textBox1.Text = "Name IN ('" + (additionalShortlist + myTeam.shortlist).Replace("'", "''").Replace(",,", ",").Replace(",", "','") + "')";
 
-        private void button14_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>120";
-            filter();
-        }
-        private void button16_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(DM=2 OR M=2 OR AM=2) AND ((CRE+DET+OFF+PAS)*1.5+POSI+TAC+PAC)>90";
-            filter();
-        }
+                    dv.RowFilter = textBox1.Text;
+                    break;
+                case "FK/Corner":
+                    textBox1.Text = "Club='" + SaveGame.managerList[SaveGame.managerList.Count - 1].club + "' AND (CRE+PAS+SET)>=35";
+                    dv.RowFilter = textBox1.Text;
+                    break;
+                case "Show Average":
+                    DataRow dr = dt.NewRow();
+                    dr["Name"] = "Average";
+                    foreach (DataGridViewColumn col in sqlDatagridview1.Columns)
+                    {
+                        switch (SqlDataGridView.GetValueType(col.ValueType))
+                        {
+                            case "Double":
+                            case "Int":
+                                dr[col.Name] = dv.Table.Compute("Avg(" + col.Name + ")", textBox1.Text);
+                                break;
+                        }
+                    }
+                    dv.Table.Rows.InsertAt(dr, 0);
+                    dv.Sort = "";
+                    break;
+                case "Filter":
+                    filter();
+                    break;
+                case "Reset":
+                    foreach (Control c in splitContainer1.Panel2.Controls)
+                    {
+                        if (c is NumericUpDown)
+                        {
+                            ((NumericUpDown)c).Value = 0;
+                        }
+                        else if (c is TextBox)
+                            ((TextBox)c).Text = "";
+                        else if (c is ComboBox)
+                            ((ComboBox)c).SelectedIndex = 0;
+                    }
+                    textBox1.Text = "";
+                    filter();
+                    break;
 
-        private void button13_Click(object sender, EventArgs e)
-        {
-            List<Manager> list = SaveGame.ReadManagerData();
-            textBox1.Text = "Club='" + list[list.Count - 1].club + "' AND (CRE+PAS+SET)>=35";
-            dv.RowFilter = textBox1.Text;
+            }
 
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(AM=2 OR S=2) AND DET>=10 AND OFF>=15 AND SHO>=15 AND HEA>=10";
-            filter();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=10 AND OFF>=12 AND SHO>=12 AND HEA>=5";
-            filter();
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "(M=2 OR AM=2 OR S=2) AND DET>=5 AND OFF>=10 AND SHO>=10 AND HEA>=5";
-            filter();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            filter();
-        }
-
+  
      
 
         private void sqlDatagridview1_CellContentClick(object sender, MouseEventArgs e)
@@ -314,7 +380,7 @@ namespace cm
                         {
                             if (SaveGame.teamList[i].shortlist != null && SaveGame.teamList[i].shortlist.Contains(name))
                             {
-                                interestedClub += SaveGame.teamList[i].name + " - " + SaveGame.teamList[i].division + "\n";
+                                interestedClub += SaveGame.teamList[i].name + " - " + SaveGame.teamList[i].division+ " - " + SaveGame.teamList[i].balance.ToString("N0") + "\n";
                             }
                         }
                         MessageBox.Show(interestedClub, "Interested Club");
@@ -326,10 +392,13 @@ namespace cm
                         Player p = SaveGame.playerList[playerID];
                         Team PlayerTeam = SaveGame.teamList.Find(x => x.name.Equals(clubName));
                         Team MyTeam = SaveGame.teamList[SaveGame.MyClubID()];
+                        //check for bcr condition met
+                        bool bcr = (p.bcr.Equals("yes") && p.cpop < MyTeam.pop && p.crep < MyTeam.rep - 35);
                         string msg = p.Name + "\n\n" +
                             "Player Rep: " + p.rep + "\nPlayer Pot: " + p.pot + "\n\n"+
                             clubName + " Rep: " + PlayerTeam.rep + "\n" + clubName + " Pop: " + PlayerTeam.pop + "\n\n" +
-                            MyTeam.name + " Rep: " + MyTeam.rep + "\n" + MyTeam.name +" Pop: " + MyTeam.pop + "\n\n";
+                            MyTeam.name + " Rep: " + MyTeam.rep + "\n" + MyTeam.name +" Pop: " + MyTeam.pop +  "\n\n";
+
                         //player will negotiate depends on:
                         //1. player potential, reputation, player on transfer list or loan list
                         //2. player's club reputation and popularity and league
@@ -337,7 +406,7 @@ namespace cm
                         int clubreputation_varian = MyTeam.rep - PlayerTeam.rep;
                         int clubpopularity_varian = (MyTeam.pop - PlayerTeam.pop) * 5;
                         int varian = clubreputation_varian + clubpopularity_varian;
-                        msg += "Rep Varian: " + clubreputation_varian + "\nPop Varian: " + clubpopularity_varian + "\n\n";
+                        msg += "Rep Varian: " + clubreputation_varian + (bcr ? " (bcr)" : "") + "\nPop Varian: " + clubpopularity_varian + "\n\n";
                         if (p.TRF.Equals("REQ") || p.TRF.Equals("LOA") || p.TRF.Equals("CLU"))
                         {
                             msg += "Player is Listed\n";
@@ -354,7 +423,8 @@ namespace cm
                             msg += "Join Chance: 50/50";
                         MessageBox.Show(msg, "Join Chance Calculation");
                     }
-                    else if (sqlDatagridview1.CurrentCell.OwningColumn.Name.Equals("club"))
+                    else if (sqlDatagridview1.CurrentCell.OwningColumn.Name.Equals("club") || 
+                        sqlDatagridview1.CurrentCell.OwningColumn.Name.Equals("avail"))
                     {
                         string clubName = sqlDatagridview1.CurrentRow.Cells["club"].Value.ToString();
                         string clubRep = sqlDatagridview1.CurrentRow.Cells["CRep"].Value.ToString();
@@ -387,23 +457,7 @@ namespace cm
             }
         }
 
-        private void button11_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "GK=2 AND DET>=10 AND HEA>=15 AND POSI>=18 AND TAC>=18";
-            filter();
-        }
-
-        private void button12_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "GK=2 AND DET>=10 AND HEA>=15 AND POSI>=15 AND TAC>=15";
-            filter();
-        }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "GK=2 AND HEA>=10 AND POSI>=15 AND TAC>=15";
-            filter();
-        }
+     
         
         private void playerDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -508,17 +562,17 @@ namespace cm
                 ts.DropDownItems.Clear();
                 //compareDBToolStripMenuItem.DropDownItems.Clear();
 
-                IOrderedEnumerable<string> list1 = from d in Directory.GetDirectories(SaveGame.path)
+                /*IOrderedEnumerable<string> list1 = from d in Directory.GetDirectories(SaveGame.path)
                                                    select d.Split('\\').Last() into d
                                                    where Regex.Match(d, "^[0-9]+").Success
                                                    orderby d descending
                                                    select d;
-
+                */
                 IOrderedEnumerable<string> list2 = from d in Directory.GetFiles(SaveGame.BackupPath, SaveGame.SelectedSaveGame + "S16.*.zip")
                                                    select d.Split('\\').Last() into d
                                                    orderby d descending
                                                    select d;
-                foreach (string name in list2.Concat(list1))
+                foreach (string name in list2) //.Concat(list1))
                 {
                     Action addAction = delegate ()
                     {
@@ -590,61 +644,7 @@ namespace cm
             //MessageBox.Show("done restore from " + name);
         }
 
-        private void button10_Click(object sender, EventArgs e)
-        {           
-            foreach (Control c in splitContainer1.Panel2.Controls)
-            {
-                if (c is NumericUpDown)
-                {
-                    ((NumericUpDown)c).Value = 0;
-                }
-                else if (c is TextBox)
-                    ((TextBox)c).Text = ""; 
-                else if (c is ComboBox)
-                    ((ComboBox)c).SelectedIndex = 0;
-            }
-            textBox1.Text = "";
-            filter();
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            List<Manager> list = SaveGame.ReadManagerData();
-            if (dt.TableName == "Team")
-                textBox1.Text = "Name='" + list[list.Count - 1].club + "'";
-            else 
-                textBox1.Text = "Club='" + list[list.Count - 1].club + "'";
-            dv.RowFilter = textBox1.Text;
-
-        }
-        private void btnMyCountry_Click(object sender, EventArgs e)
-        {
-            List<Manager> list = SaveGame.ReadManagerData();
-            if (dt.TableName == "Player")
-                textBox1.Text = "CLUB_CN='" + list[list.Count - 1].cn + "'";
-            else
-                textBox1.Text = "CN='" + list[list.Count - 1].cn + "'";
-            dv.RowFilter = textBox1.Text;
-            
-        }
-
-        private void btnMyShortlist_Click(object sender, EventArgs e)
-        {
-            List<Manager> managerlist = SaveGame.ReadManagerData();
-            //List<Team> teamList = SaveGame.ReadTeamData(false,true);
-            Team myTeam = SaveGame.teamList[managerlist[managerlist.Count - 1].clubID];
-
-            String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
-            string additionalShortlist = "";
-            if (File.Exists(filename))
-            {
-                additionalShortlist = File.ReadAllText(filename).Replace("\r\n", ",");
-            }    
-            textBox1.Text = "Name IN ('" + (additionalShortlist + myTeam.shortlist).Replace("'","''").Replace(",,",",").Replace(",", "','") + "')";
-
-            dv.RowFilter = textBox1.Text;
-        }
-
+  
         private void updateAppToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -673,25 +673,7 @@ namespace cm
             }
         }
 
-        private void button17_Click(object sender, EventArgs e)
-        {
-            DataRow dr = dt.NewRow();
-            dr["Name"] = "Average";
-            foreach (DataGridViewColumn col in sqlDatagridview1.Columns)
-            {
-                switch (SqlDataGridView.GetValueType(col.ValueType))
-                {
-                    case "Double":
-                    case "Int":
-                        dr[col.Name] = dv.Table.Compute("Avg(" + col.Name + ")", textBox1.Text);
-                        break;
-
-                }
-            }
-
-            dv.Table.Rows.InsertAt(dr, 0);
-        }
-
+     
         private void localAppUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string exeName = System.Reflection.Assembly.GetEntryAssembly().Location;

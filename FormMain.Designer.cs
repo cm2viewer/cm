@@ -307,7 +307,6 @@ namespace cm
             this.button17.TabIndex = 64;
             this.button17.Text = "Show Average";
             this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
             // button16
             // 
@@ -317,7 +316,6 @@ namespace cm
             this.button16.TabIndex = 63;
             this.button16.Text = "MF FAIR";
             this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
             // btnMyShortlist
             // 
@@ -327,7 +325,6 @@ namespace cm
             this.btnMyShortlist.TabIndex = 62;
             this.btnMyShortlist.Text = "My Shortlist";
             this.btnMyShortlist.UseVisualStyleBackColor = true;
-            this.btnMyShortlist.Click += new System.EventHandler(this.btnMyShortlist_Click);
             // 
             // button13
             // 
@@ -337,7 +334,6 @@ namespace cm
             this.button13.TabIndex = 61;
             this.button13.Text = "FK/Corner";
             this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button14
             // 
@@ -347,7 +343,6 @@ namespace cm
             this.button14.TabIndex = 60;
             this.button14.Text = "MF GOOD";
             this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // button15
             // 
@@ -357,7 +352,6 @@ namespace cm
             this.button15.TabIndex = 59;
             this.button15.Text = "MF BEST";
             this.button15.UseVisualStyleBackColor = true;
-            this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
             // btnMyCountry
             // 
@@ -367,7 +361,6 @@ namespace cm
             this.btnMyCountry.TabIndex = 58;
             this.btnMyCountry.Text = "My Country";
             this.btnMyCountry.UseVisualStyleBackColor = true;
-            this.btnMyCountry.Click += new System.EventHandler(this.btnMyCountry_Click);
             // 
             // button9
             // 
@@ -377,7 +370,6 @@ namespace cm
             this.button9.TabIndex = 52;
             this.button9.Text = "GK FAIR";
             this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // button10
             // 
@@ -387,7 +379,6 @@ namespace cm
             this.button10.TabIndex = 57;
             this.button10.Text = "Reset";
             this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // button8
             // 
@@ -397,7 +388,6 @@ namespace cm
             this.button8.TabIndex = 51;
             this.button8.Text = "FC FAIR";
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button7
             // 
@@ -407,7 +397,6 @@ namespace cm
             this.button7.TabIndex = 50;
             this.button7.Text = "D/DM FAIR";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button12
             // 
@@ -417,7 +406,6 @@ namespace cm
             this.button12.TabIndex = 43;
             this.button12.Text = "GK GOOD";
             this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // button11
             // 
@@ -427,7 +415,6 @@ namespace cm
             this.button11.TabIndex = 42;
             this.button11.Text = "GK BEST";
             this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // button6
             // 
@@ -437,7 +424,6 @@ namespace cm
             this.button6.TabIndex = 39;
             this.button6.Text = "My Club";
             this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // textBox1
             // 
@@ -455,7 +441,6 @@ namespace cm
             this.button5.TabIndex = 37;
             this.button5.Text = "D/DM GOOD";
             this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button3
             // 
@@ -465,7 +450,6 @@ namespace cm
             this.button3.TabIndex = 36;
             this.button3.Text = "Filter";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button2
             // 
@@ -475,7 +459,6 @@ namespace cm
             this.button2.TabIndex = 34;
             this.button2.Text = "FC BEST";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
@@ -485,7 +468,6 @@ namespace cm
             this.button1.TabIndex = 33;
             this.button1.Text = "D/DM BEST";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button4
             // 
@@ -495,7 +477,6 @@ namespace cm
             this.button4.TabIndex = 38;
             this.button4.Text = "FC GOOD";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // tbSkill
             // 

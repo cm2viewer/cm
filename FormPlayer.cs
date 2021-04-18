@@ -77,7 +77,7 @@ namespace cm
                 string interestedClub = "";
                 for (int i = 0; i < SaveGame.teamList.Count; i++)
                 {
-                    if (SaveGame.teamList[i].shortlist != null && SaveGame.teamList[i].shortlist.Contains("," + name))
+                    if (SaveGame.teamList[i].shortlist != null && SaveGame.teamList[i].shortlist.Contains(name))
                     {
                         interestedClub += SaveGame.teamList[i].name + " - " + SaveGame.teamList[i].division + ", ";
                     }
@@ -85,7 +85,7 @@ namespace cm
                 tbInterested.Text = interestedClub;
             }
 
-            String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
+            String filename = SaveGame.BackupPath + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
             if (File.Exists(filename))
             {
                 if (File.ReadAllText(filename).Contains(labelName.Text))
@@ -133,13 +133,10 @@ namespace cm
 
         private void btnShortlist_Click(object sender, EventArgs e)
         {
-            String filename = SaveGame.path + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
+            String filename = SaveGame.BackupPath + "cmshortlist" + SaveGame.SelectedSaveGame + ".txt";
             if (btnShortlist.Text == "Add to shortlist")
             {
-                using (StreamWriter sw = File.AppendText(filename))
-                {
-                    sw.WriteLine(labelName.Text);
-                }
+                File.WriteAllLines(filename, File.ReadAllLines(filename).Concat(new string[] { labelName.Text }).OrderBy(x=>x));
                 btnShortlist.Text = "Remove shortlist";
             }
             else

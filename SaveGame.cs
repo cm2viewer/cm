@@ -331,6 +331,7 @@ namespace cm
                             player.tal = data.talent;
                             player.caps = data.caps;
                             player.crep = teamNameList[data.club].rep;
+                            player.cpop = teamNameList[data.club].pop;
                             player.play = data.play;
                             player.price = (int)Math.Round(data.price);
                             player.wage = (int)data.wage;
@@ -352,11 +353,12 @@ namespace cm
                             player.div = teamNameList[data.club].division;
                             try
                             {
+           
                                 player.age = new DateTime(curDate.Subtract(new DateTime(data.yy + 1900, data.mm, Math.Max(1,(int)data.dd))).Ticks).Year - 1;
+                                if (data.joindate_mm == 2) data.joindate_dd = Math.Min((byte)28, data.joindate_dd);
                                 player.join = new DateTime(data.joindate_yy + 1900, data.joindate_mm, Math.Max(1,(int)data.joindate_dd));
                                 player.days = curDate.Subtract(new DateTime(data.joindate_yy + 1900, data.joindate_mm, Math.Max(1, (int)data.joindate_dd))).Days;
                                 //player.months= curDate.Subtract(new DateTime(data.joindate_yy + 1900, data.joindate_mm, data.joindate_dd)).;
-                                player.cpop = teamNameList[data.club].pop;
                                 player.mon = (curDate.Year - (data.joindate_yy + 1900)) * 12 + (curDate.Month - data.joindate_mm);
                             }
                             catch { }
@@ -391,18 +393,23 @@ namespace cm
                             player.Str = array2[21];
                             player.Tac = array2[22];
                             player.Tec = array2[23];
+
                             //sum all skill                            
                             for (int x = 0; x < 24; x++)
                                 player.skill += data.skill[x];
-                            // subtract morale
-                            player.skill -= player.Mor;
+                            // subtract morale, influence, injury prone
+                            player.skill -= (player.Mor + player.Inf + player.Inj);
                             //fix injury prones and dirtiness 1-good 20-bad
-                            player.skill += (int)((20 - player.Inj - player.Inj) + (20 - player.Dir - player.Dir));                            
-                            player.avg = (double)player.skill/23;
+                            player.skill += (int)(20 - player.Dir - player.Dir);                            
+                            player.avg = (double)player.skill/21;
                             
-                            player.DDM = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
-                            player.FC = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
-                            player.DEF = (double)(player.Tac + player.Posi + player.Hea + player.Det) / 4;
+                            //player.DDM = (int)(player.Tac * 20 + player.Posi * 20 + player.Hea * 15 + player.Det * 10 + player.Sta * 10) * player.pot / 75 / 18;
+                            //player.FC = (int)(player.Off * 20 + player.Sho * 20 + player.Cre * 10 + player.Hea * 10 + player.Det * 10 + player.Sta * 10) * player.pot / 80 / 18;
+                            player.DEF = (double)(player.Tac*5 + player.Posi*3 + player.Hea + player.Det +player.Agg) / 11;  //tony adams, steve bould
+                            //player.SS = (double)(player.Cre*2 + player.Det + player.Dri + player.Cre  + player.Pac + player.Pas*2 + player.Tec) /9;
+                            player.SS = (double)(player.Cre + player.Fla + player.Pas + player.Tec) / 4;   //zidane, beckham, pires
+                            player.SC = (double)(player.Off*5 + player.Sho*5 + 
+                                player.Det+ player.Hea + player.Pac +  player.Fla + player.Str  + player.Tec ) / 16;    //klinsman, fowler, branca
 
                             //determine if player is for sell
                             if (player.TRF == "REQ" || player.TRF == "CLU")
@@ -445,7 +452,7 @@ namespace cm
                                 }
                             }
                             //check for bcr
-                            if (player.bcr.Equals("yes") && player.avail == null)
+                            if (player.bcr.Equals("yes"))// && player.avail == null)
                             {
                                 int myclub = managerList[managerList.Count - 1].clubID;
                                 if (player.cpop < teamNameList[myclub].pop && player.crep < teamNameList[myclub].rep - 35)

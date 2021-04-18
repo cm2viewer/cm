@@ -203,6 +203,8 @@ namespace cm
         public int skill { get; set; }
         public double avg { get; set; }
         public double DEF { get; set; }         //defense average skill
+        public double SS { get; set; }          //second striker average skill
+        public double SC { get; set; }          //striker average skill
         public string TRF { get; set; }
         public int buy { get; set; }
         public int price { get; set; }
@@ -213,8 +215,8 @@ namespace cm
         public byte crep { get; set; }
         public int cpop { get; set; } //club popularity, determine the price threshold for player available for sale
 
-        public int DDM { get; set; }
-        public int FC { get; set; }
+      //  public int DDM { get; set; }
+       // public int FC { get; set; }
         public string club_cn { get; set; }
         public string div { get; set; }
         public int wage { get; set; }
